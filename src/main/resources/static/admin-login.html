@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.4),
+                    rgba(0, 0, 0, 0.4)
+                ),
+                url("/images/manali.jpg");
+
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 420px;
+            max-width: 95%;
+
+            background: rgba(255, 255, 255, 0.97);
+
+            padding: 35px;
+
+            border-radius: 18px;
+
+            box-shadow:
+                0 10px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .logo {
+            text-align: center;
+
+            font-size: 30px;
+
+            font-weight: bold;
+
+            color: #1769aa;
+
+            margin-bottom: 8px;
+        }
+
+        .title {
+            text-align: center;
+
+            font-size: 24px;
+
+            font-weight: bold;
+
+            color: #333;
+
+            margin-bottom: 28px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+
+            font-weight: bold;
+
+            color: #333;
+
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+
+            padding: 13px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #1769aa;
+
+            box-shadow:
+                0 0 5px rgba(23, 105, 170, 0.3);
+        }
+
+        /* Password */
+
+        .password-container {
+            width: 100%;
+        }
+
+        /* Show Password */
+
+        .show-password {
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 9px;
+
+            font-size: 14px;
+
+            font-weight: normal;
+
+            cursor: pointer;
+
+            color: #555;
+        }
+
+        .show-password input {
+            width: 16px;
+            height: 16px;
+
+            margin: 0;
+
+            cursor: pointer;
+        }
+
+        /* Forgot Password */
+
+        .forgot-container {
+            text-align: right;
+
+            margin-top: 15px;
+
+            margin-bottom: 20px;
+        }
+
+        .forgot-link {
+            color: #1769aa;
+
+            text-decoration: none;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Login */
+
+        .login-button {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #1597d4;
+
+            color: white;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .login-button:hover {
+            background: #087eb5;
+        }
+
+        /* Message */
+
+        #message {
+            text-align: center;
+
+            margin-top: 15px;
+
+            min-height: 20px;
+
+            font-weight: bold;
+        }
+
+        /* Home */
+
+        .home {
+            text-align: center;
+
+            margin-top: 22px;
+        }
+
+        .home a {
+            color: #333;
+
+            text-decoration: none;
+
+            font-weight: bold;
+        }
+
+        .home a:hover {
+            color: #1769aa;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="login-container">
+
+
+    <!-- Logo -->
+
+    <div class="logo">
+        Autophile Yatra
+    </div>
+
+
+    <!-- Title -->
+
+    <div class="title">
+        Admin Login
+    </div>
+
+
+    <form id="adminLoginForm" novalidate>
+
+
+        <!-- Username -->
+
+        <div class="form-group">
+
+            <label for="username">
+                Username
+            </label>
+
+            <input
+                type="text"
+                id="username"
+                placeholder="Enter admin username"
+                autocomplete="username"
+            >
+
+        </div>
+
+
+        <!-- Password -->
+
+        <div class="form-group">
+
+            <label for="password">
+                Password
+            </label>
+
+
+            <div class="password-container">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter admin password"
+                    autocomplete="current-password"
+                >
+
+
+                <!-- Show Password -->
+
+                <label class="show-password">
+
+                    <input
+                        type="checkbox"
+                        id="showPassword"
+                    >
+
+                    Show Password
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- Forgot Password -->
+
+        <div class="forgot-container">
+
+            <a
+                href="/forgot-password.html?type=ADMIN"
+                class="forgot-link">
+
+                Forgot Password?
+
+            </a>
+
+        </div>
+
+
+        <!-- Login -->
+
+        <button
+            type="submit"
+            class="login-button">
+
+            Login
+
+        </button>
+
+
+    </form>
+
+
+    <!-- Message -->
+
+    <div id="message"></div>
+
+
+    <!-- Home -->
+
+    <div class="home">
+
+        <a href="/index.html">
+            Back to Home
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================================
+   SHOW / HIDE PASSWORD
+========================================= */
+
+document
+    .getElementById("showPassword")
+    .addEventListener(
+        "change",
+        function () {
+
+            const password =
+                document.getElementById("password");
+
+
+            if (this.checked) {
+
+                password.type = "text";
+
+            } else {
+
+                password.type = "password";
+
+            }
+
+        }
+    );
+
+
+/* =========================================
+   ADMIN LOGIN FORM
+========================================= */
+
+document
+    .getElementById("adminLoginForm")
+    .addEventListener(
+        "submit",
+        loginAdmin
+    );
+
+
+/* =========================================
+   ADMIN LOGIN
+========================================= */
+
+async function loginAdmin(event) {
+
+    event.preventDefault();
+
+
+    const username =
+        document
+            .getElementById("username")
+            .value
+            .trim();
+
+
+    const password =
+        document
+            .getElementById("password")
+            .value;
+
+
+    const message =
+        document
+            .getElementById("message");
+
+
+    message.innerText = "";
+
+
+    /* Username validation */
+
+    if (username === "") {
+
+        message.style.color = "red";
+
+        message.innerText =
+            "Please enter admin username.";
+
+        return;
+    }
+
+
+    /* Password validation */
+
+    if (password === "") {
+
+        message.style.color = "red";
+
+        message.innerText =
+            "Please enter admin password.";
+
+        return;
+    }
+
+
+    try {
+
+
+        const response =
+            await fetch(
+
+                `/api/admin/login?username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`,
+
+                {
+                    method: "POST"
+                }
+
+            );
+
+
+        const result =
+            await response.text();
+
+
+        /* Successful login */
+
+        if (
+            result.startsWith(
+                "Login successful"
+            )
+        ) {
+
+
+            /*
+                Expected response:
+
+                Login successful|1
+            */
+
+
+            const parts =
+                result.split("|");
+
+
+            const adminId =
+                parts[1];
+
+
+            /* Save admin session */
+
+            sessionStorage.setItem(
+                "adminId",
+                adminId
+            );
+
+
+            sessionStorage.setItem(
+                "adminUsername",
+                username
+            );
+
+
+            message.style.color =
+                "green";
+
+
+            message.innerText =
+                "Login successful!";
+
+
+            /* Admin Dashboard */
+
+            setTimeout(
+                function () {
+
+                    window.location.href =
+                        "/admin-dashboard.html";
+
+                },
+                1000
+            );
+
+
+        } else {
+
+
+            message.style.color =
+                "red";
+
+
+            message.innerText =
+                result;
+
+        }
+
+
+    } catch (error) {
+
+
+        console.error(error);
+
+
+        message.style.color =
+            "red";
+
+
+        message.innerText =
+            "Server error. Please try again.";
+
+    }
+
+}
+
+</script>
+
+
+</body>
+
+</html>

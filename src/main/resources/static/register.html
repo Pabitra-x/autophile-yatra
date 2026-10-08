@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Register - Autophile Yatra</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family: Arial, sans-serif;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    background:
+        linear-gradient(
+            rgba(0, 0, 0, 0.40),
+            rgba(0, 0, 0, 0.40)
+        ),
+        url("/images/goa.jpg");
+
+    background-size: cover;
+
+    background-position: center;
+
+    background-repeat: no-repeat;
+
+    padding: 30px 0;
+}
+
+
+/* ================= CONTAINER ================= */
+
+.register-container {
+
+    width: 450px;
+
+    max-width: 92%;
+
+    background: rgba(255, 255, 255, 0.97);
+
+    padding: 30px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ================= LOGO ================= */
+
+.logo {
+
+    text-align: center;
+
+    font-size: 30px;
+
+    font-weight: bold;
+
+    color: #1769aa;
+
+    margin-bottom: 8px;
+}
+
+
+/* ================= TITLE ================= */
+
+.title {
+
+    text-align: center;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    color: #333;
+
+    margin-bottom: 25px;
+}
+
+
+/* ================= FORM ================= */
+
+.form-group {
+
+    margin-bottom: 16px;
+}
+
+label {
+
+    display: block;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+
+    color: #333;
+}
+
+input {
+
+    width: 100%;
+
+    padding: 12px;
+
+    border: 1px solid #ccc;
+
+    border-radius: 8px;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+input:focus {
+
+    border-color: #1769aa;
+
+    box-shadow:
+        0 0 5px rgba(23, 105, 170, 0.3);
+}
+
+
+/* ================= BUTTON ================= */
+
+.create-button {
+
+    width: 100%;
+
+    padding: 13px;
+
+    margin-top: 5px;
+
+    border: none;
+
+    border-radius: 8px;
+
+    background: #1597d4;
+
+    color: white;
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.create-button:hover {
+
+    background: #087eb5;
+}
+
+.create-button:disabled {
+
+    background: #999;
+
+    cursor: not-allowed;
+}
+
+
+/* ================= MESSAGE ================= */
+
+#message {
+
+    text-align: center;
+
+    margin-top: 15px;
+
+    font-weight: bold;
+
+    min-height: 20px;
+}
+
+
+/* ================= LOGIN ================= */
+
+.login-text {
+
+    text-align: center;
+
+    margin-top: 22px;
+
+    color: #555;
+}
+
+.login-text a {
+
+    color: #1769aa;
+
+    text-decoration: none;
+
+    font-weight: bold;
+}
+
+.login-text a:hover {
+
+    text-decoration: underline;
+}
+
+
+/* ================= HOME ================= */
+
+.home {
+
+    text-align: center;
+
+    margin-top: 16px;
+}
+
+.home a {
+
+    color: #333;
+
+    text-decoration: none;
+
+    font-weight: bold;
+}
+
+.home a:hover {
+
+    color: #1769aa;
+}
+
+
+/* ================= MOBILE ================= */
+
+@media (max-width: 500px) {
+
+    .register-container {
+
+        padding: 22px;
+
+    }
+
+    .logo {
+
+        font-size: 25px;
+
+    }
+
+    .title {
+
+        font-size: 21px;
+
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="register-container">
+
+
+    <!-- LOGO -->
+
+    <div class="logo">
+
+        Autophile Yatra
+
+    </div>
+
+
+    <!-- TITLE -->
+
+    <div class="title">
+
+        Create Account
+
+    </div>
+
+
+    <!-- FORM -->
+
+    <form id="registerForm">
+
+
+        <!-- FULL NAME -->
+
+        <div class="form-group">
+
+            <label for="name">
+
+                Full Name
+
+            </label>
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Enter your full name"
+                autocomplete="name"
+            >
+
+        </div>
+
+
+        <!-- DATE OF BIRTH -->
+
+        <div class="form-group">
+
+            <label for="dateOfBirth">
+
+                Date of Birth
+
+            </label>
+
+            <input
+                type="date"
+                id="dateOfBirth"
+            >
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="form-group">
+
+            <label for="email">
+
+                Email
+
+            </label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                autocomplete="email"
+            >
+
+        </div>
+
+
+        <!-- MOBILE -->
+
+        <div class="form-group">
+
+            <label for="mobile">
+
+                Mobile Number
+
+            </label>
+
+            <input
+                type="text"
+                id="mobile"
+                maxlength="10"
+                placeholder="Enter 10-digit mobile number"
+                autocomplete="tel"
+            >
+
+        </div>
+
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+            <label for="password">
+
+                Password
+
+            </label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Create password"
+                autocomplete="new-password"
+            >
+
+        </div>
+
+
+        <!-- CREATE ACCOUNT -->
+
+        <button
+            type="submit"
+            id="createButton"
+            class="create-button"
+        >
+
+            Create Account
+
+        </button>
+
+
+    </form>
+
+
+    <!-- MESSAGE -->
+
+    <div id="message"></div>
+
+
+    <!-- LOGIN -->
+
+    <div class="login-text">
+
+        Already have an account?
+
+        <a href="/login.html">
+
+            Sign In
+
+        </a>
+
+    </div>
+
+
+    <!-- HOME -->
+
+    <div class="home">
+
+        <a href="/index.html">
+
+            ← Back to Home
+
+        </a>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* =========================
+   MOBILE NUMBER ONLY
+========================= */
+
+document
+    .getElementById("mobile")
+    .addEventListener("input", function () {
+
+        this.value = this.value
+            .replace(/\D/g, "")
+            .slice(0, 10);
+
+    });
+
+
+/* =========================
+   NAME CLEANUP
+========================= */
+
+document
+    .getElementById("name")
+    .addEventListener("input", function () {
+
+        this.value = this.value
+            .replace(/[0-9]/g, "");
+
+    });
+
+
+/* =========================
+   REGISTER FORM
+========================= */
+
+document
+    .getElementById("registerForm")
+    .addEventListener(
+        "submit",
+        registerCustomer
+    );
+
+
+/* =========================
+   REGISTER CUSTOMER
+========================= */
+
+async function registerCustomer(event) {
+
+    event.preventDefault();
+
+
+    const name =
+        document
+            .getElementById("name")
+            .value
+            .trim();
+
+
+    const dateOfBirth =
+        document
+            .getElementById("dateOfBirth")
+            .value;
+
+
+    const email =
+        document
+            .getElementById("email")
+            .value
+            .trim();
+
+
+    const mobile =
+        document
+            .getElementById("mobile")
+            .value
+            .trim();
+
+
+    const password =
+        document
+            .getElementById("password")
+            .value;
+
+
+    const message =
+        document.getElementById("message");
+
+
+    const createButton =
+        document.getElementById("createButton");
+
+
+    message.innerText = "";
+
+
+    /* =========================
+       NAME VALIDATION
+    ========================= */
+
+    if (name === "") {
+
+        showError(
+            "Please enter your full name."
+        );
+
+        return;
+    }
+
+
+    if (!/^[A-Za-z ]{2,}$/.test(name)) {
+
+        showError(
+            "Please enter a valid name."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       DOB VALIDATION
+    ========================= */
+
+    if (dateOfBirth === "") {
+
+        showError(
+            "Please enter your date of birth."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       AGE VALIDATION
+    ========================= */
+
+    const dob =
+        new Date(dateOfBirth);
+
+
+    const today =
+        new Date();
+
+
+    let age =
+        today.getFullYear() -
+        dob.getFullYear();
+
+
+    const monthDifference =
+        today.getMonth() -
+        dob.getMonth();
+
+
+    if (
+        monthDifference < 0 ||
+        (
+            monthDifference === 0 &&
+            today.getDate() < dob.getDate()
+        )
+    ) {
+
+        age--;
+
+    }
+
+
+    if (age < 18) {
+
+        showError(
+            "You must be 18 years or older to register."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       EMAIL VALIDATION
+    ========================= */
+
+    if (
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
+    ) {
+
+        showError(
+            "Please enter a valid email address."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       MOBILE VALIDATION
+    ========================= */
+
+    if (!/^[0-9]{10}$/.test(mobile)) {
+
+        showError(
+            "Please enter a valid 10-digit mobile number."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       PASSWORD VALIDATION
+    ========================= */
+
+    if (password.length < 6) {
+
+        showError(
+            "Password must contain at least 6 characters."
+        );
+
+        return;
+    }
+
+
+    /* =========================
+       DISABLE BUTTON
+    ========================= */
+
+    createButton.disabled = true;
+
+    createButton.innerText =
+        "Creating Account...";
+
+
+    try {
+
+
+        /* =========================
+           REGISTRATION API
+        ========================= */
+
+        const response =
+            await fetch(
+                "/api/customers/register",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        name: name,
+
+                        dateOfBirth:
+                            dateOfBirth,
+
+                        email: email,
+
+                        mobile: mobile,
+
+                        password: password
+
+                    })
+
+                }
+            );
+
+
+        const result =
+            await response.text();
+
+
+        /* =========================
+           SUCCESS
+        ========================= */
+
+        if (
+            result.startsWith(
+                "Registration successful"
+            )
+        ) {
+
+
+            /*
+             * Save mobile number.
+             *
+             * otp.html can use this
+             * value to generate/verify OTP.
+             */
+
+            sessionStorage.setItem(
+                "registrationMobile",
+                mobile
+            );
+
+
+            message.style.color =
+                "green";
+
+
+            message.innerText =
+                "Registration successful! Redirecting to OTP...";
+
+
+            setTimeout(function () {
+
+                window.location.href =
+                    "/otp.html";
+
+            }, 1000);
+
+
+        } else {
+
+
+            /* =========================
+               REGISTRATION FAILED
+            ========================= */
+
+            message.style.color =
+                "red";
+
+
+            message.innerText =
+                result;
+
+
+            createButton.disabled =
+                false;
+
+
+            createButton.innerText =
+                "Create Account";
+
+        }
+
+
+    } catch (error) {
+
+
+        console.error(error);
+
+
+        message.style.color =
+            "red";
+
+
+        message.innerText =
+            "Server error. Please try again.";
+
+
+        createButton.disabled =
+            false;
+
+
+        createButton.innerText =
+            "Create Account";
+
+    }
+
+}
+
+
+/* =========================
+   ERROR FUNCTION
+========================= */
+
+function showError(text) {
+
+    const message =
+        document.getElementById("message");
+
+    message.style.color =
+        "red";
+
+    message.innerText =
+        text;
+}
+
+</script>
+
+
+</body>
+
+</html>

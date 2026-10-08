@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>My Bookings - Autophile Yatra</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            background:
+                linear-gradient(
+                    rgba(0,0,0,0.45),
+                    rgba(0,0,0,0.45)
+                ),
+                url("/images/customer-dashboard-bg.png");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+
+            min-height: 100vh;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+
+            background: rgba(0,0,0,0.55);
+
+            color: white;
+
+            padding: 18px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            backdrop-filter: blur(10px);
+        }
+
+
+        .logo {
+
+            font-size: 26px;
+
+            font-weight: bold;
+        }
+
+
+        .back-btn {
+
+            background: white;
+
+            color: #174f86;
+
+            border: none;
+
+            padding: 10px 20px;
+
+            border-radius: 25px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .back-btn:hover {
+
+            background: #e8f3ff;
+        }
+
+
+        /* ================= CONTAINER ================= */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1200px;
+
+            margin: 40px auto;
+        }
+
+
+        .title-box {
+
+            color: white;
+
+            margin-bottom: 25px;
+
+            text-align: center;
+        }
+
+
+        .title-box h1 {
+
+            font-size: 38px;
+
+            margin-bottom: 10px;
+
+            text-shadow:
+                2px 2px 5px rgba(0,0,0,0.5);
+        }
+
+
+        .title-box p {
+
+            font-size: 17px;
+        }
+
+
+        /* ================= MESSAGE ================= */
+
+        #message {
+
+            text-align: center;
+
+            color: white;
+
+            font-size: 18px;
+
+            margin: 30px 0;
+        }
+
+
+        /* ================= BOOKINGS ================= */
+
+        #bookingContainer {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(320px, 1fr));
+
+            gap: 25px;
+        }
+
+
+        .booking-card {
+
+            background: rgba(255,255,255,0.95);
+
+            border-radius: 18px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.3);
+
+            transition: 0.3s;
+        }
+
+
+        .booking-card:hover {
+
+            transform: translateY(-5px);
+        }
+
+
+        .booking-card h2 {
+
+            color: #174f86;
+
+            margin-bottom: 18px;
+        }
+
+
+        .booking-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 10px 0;
+
+            border-bottom:
+                1px solid #e5e7eb;
+        }
+
+
+        .booking-row:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .label {
+
+            font-weight: bold;
+
+            color: #555;
+        }
+
+
+        .value {
+
+            color: #222;
+
+            text-align: right;
+        }
+
+
+        /* ================= STATUS ================= */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 6px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: bold;
+        }
+
+
+        .pending {
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+
+        .approved {
+
+            background: #dbeafe;
+
+            color: #1e40af;
+        }
+
+
+        .advance-paid {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .trip-started {
+
+            background: #ede9fe;
+
+            color: #6d28d9;
+        }
+
+
+        .fully-paid {
+
+            background: #dcfce7;
+
+            color: #166534;
+        }
+
+
+        .completed {
+
+            background: #d1fae5;
+
+            color: #065f46;
+        }
+
+
+        .rejected {
+
+            background: #fee2e2;
+
+            color: #991b1b;
+        }
+
+
+        /* ================= BUTTONS ================= */
+
+        .action-area {
+
+            margin-top: 20px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 10px;
+        }
+
+
+        .action-btn {
+
+            width: 100%;
+
+            border: none;
+
+            padding: 12px;
+
+            border-radius: 25px;
+
+            color: white;
+
+            font-size: 15px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        .advance-btn {
+
+            background: #16a34a;
+        }
+
+
+        .final-btn {
+
+            background: #ea580c;
+        }
+
+
+        .tracking-btn {
+
+            background: #7c3aed;
+        }
+
+
+        .action-btn:hover {
+
+            opacity: 0.9;
+
+            transform: scale(1.01);
+        }
+
+
+        /* ================= EMPTY ================= */
+
+        .empty-box {
+
+            background: rgba(255,255,255,0.95);
+
+            padding: 45px;
+
+            border-radius: 18px;
+
+            text-align: center;
+
+            color: #555;
+
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.25);
+        }
+
+
+        .empty-box h2 {
+
+            color: #174f86;
+
+            margin-bottom: 10px;
+        }
+
+
+        .tour-btn {
+
+            margin-top: 20px;
+
+            background: #1769aa;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 25px;
+
+            border-radius: 25px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+
+                padding: 15px 20px;
+            }
+
+
+            .logo {
+
+                font-size: 20px;
+            }
+
+
+            .container {
+
+                width: 94%;
+
+                margin-top: 25px;
+            }
+
+
+            .title-box h1 {
+
+                font-size: 30px;
+            }
+
+
+            .booking-row {
+
+                flex-direction: column;
+
+                gap: 4px;
+            }
+
+
+            .value {
+
+                text-align: left;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🚗 Autophile Yatra
+        </div>
+
+
+        <button
+            class="back-btn"
+            onclick="goDashboard()">
+
+            ← Dashboard
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="container">
+
+
+        <div class="title-box">
+
+            <h1>
+                My Bookings
+            </h1>
+
+            <p>
+                View your travel bookings,
+                payment status and trip status.
+            </p>
+
+        </div>
+
+
+        <div id="message">
+            Loading your bookings...
+        </div>
+
+
+        <div id="bookingContainer"></div>
+
+    </div>
+
+
+
+    <script>
+
+
+        /* ==========================================
+           CUSTOMER LOGIN CHECK
+        ========================================== */
+
+        const customerId =
+            sessionStorage.getItem("customerId");
+
+
+        if (!customerId) {
+
+            window.location.href =
+                "/login.html";
+
+        }
+
+
+
+        /* ==========================================
+           DASHBOARD
+        ========================================== */
+
+        function goDashboard() {
+
+            window.location.href =
+                "/customer-dashboard.html";
+
+        }
+
+
+
+        /* ==========================================
+           LOAD BOOKINGS
+        ========================================== */
+
+        async function loadBookings() {
+
+            const message =
+                document.getElementById("message");
+
+
+            const container =
+                document.getElementById(
+                    "bookingContainer"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/bookings/customer/"
+                        + customerId
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load bookings"
+                    );
+
+                }
+
+
+                const bookings =
+                    await response.json();
+
+
+                message.style.display =
+                    "none";
+
+
+                if (
+                    !bookings ||
+                    bookings.length === 0
+                ) {
+
+                    container.innerHTML = `
+
+                        <div class="empty-box">
+
+                            <h2>
+                                No Bookings Found
+                            </h2>
+
+                            <p>
+                                You have not created
+                                any travel booking yet.
+                            </p>
+
+                            <button
+                                class="tour-btn"
+                                onclick="openTours()">
+
+                                Explore Tours
+
+                            </button>
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                container.innerHTML = "";
+
+
+                bookings.forEach(
+                    booking => {
+
+                        container.innerHTML +=
+                            createBookingCard(
+                                booking
+                            );
+
+                    }
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+
+                message.style.display =
+                    "block";
+
+
+                message.innerText =
+                    "Unable to load your bookings. Please try again.";
+
+            }
+
+        }
+
+
+
+        /* ==========================================
+           CREATE BOOKING CARD
+        ========================================== */
+
+        function createBookingCard(
+            booking
+        ) {
+
+            const status =
+                String(
+                    booking.bookingStatus ||
+                    "UNKNOWN"
+                ).toUpperCase();
+
+
+            let statusClass =
+                "pending";
+
+
+            if (
+                status === "APPROVED"
+            ) {
+
+                statusClass =
+                    "approved";
+
+            }
+
+            else if (
+                status === "ADVANCE_PAID"
+            ) {
+
+                statusClass =
+                    "advance-paid";
+
+            }
+
+            else if (
+                status === "TRIP_STARTED"
+            ) {
+
+                statusClass =
+                    "trip-started";
+
+            }
+
+            else if (
+                status === "FULLY_PAID"
+            ) {
+
+                statusClass =
+                    "fully-paid";
+
+            }
+
+            else if (
+                status === "COMPLETED"
+            ) {
+
+                statusClass =
+                    "completed";
+
+            }
+
+            else if (
+                status === "REJECTED"
+            ) {
+
+                statusClass =
+                    "rejected";
+
+            }
+
+
+            let actionButtons = "";
+
+
+            /* APPROVED → ADVANCE PAYMENT */
+
+            if (
+                status === "APPROVED"
+            ) {
+
+                actionButtons += `
+
+                    <button
+                        class="action-btn advance-btn"
+                        onclick="openAdvancePayment(${booking.bookingId})">
+
+                        💳 Pay Advance 25%
+
+                    </button>
+
+                `;
+
+            }
+
+
+            /* ADVANCE PAID → TRACKING */
+
+            if (
+                status === "ADVANCE_PAID"
+            ) {
+
+                actionButtons += `
+
+                    <button
+                        class="action-btn tracking-btn"
+                        onclick="openTracking(${booking.bookingId})">
+
+                        📍 Track My Trip
+
+                    </button>
+
+                `;
+
+            }
+
+
+            /* TRIP STARTED → FINAL PAYMENT */
+
+            if (
+                status === "TRIP_STARTED"
+            ) {
+
+                actionButtons += `
+
+                    <button
+                        class="action-btn final-btn"
+                        onclick="openFinalPayment(${booking.bookingId})">
+
+                        💳 Pay Final 75%
+
+                    </button>
+
+
+                    <button
+                        class="action-btn tracking-btn"
+                        onclick="openTracking(${booking.bookingId})">
+
+                        📍 Track My Trip
+
+                    </button>
+
+                `;
+
+            }
+
+
+            /* FULLY PAID → TRACKING */
+
+            if (
+                status === "FULLY_PAID"
+            ) {
+
+                actionButtons += `
+
+                    <button
+                        class="action-btn tracking-btn"
+                        onclick="openTracking(${booking.bookingId})">
+
+                        📍 Track My Trip
+
+                    </button>
+
+                `;
+
+            }
+
+
+            return `
+
+                <div class="booking-card">
+
+                    <h2>
+                        🧳 Booking #${booking.bookingId}
+                    </h2>
+
+
+                    <div class="booking-row">
+
+                        <span class="label">
+                            Tour ID
+                        </span>
+
+                        <span class="value">
+                            ${booking.tourId}
+                        </span>
+
+                    </div>
+
+
+                    <div class="booking-row">
+
+                        <span class="label">
+                            Travel Date
+                        </span>
+
+                        <span class="value">
+                            ${booking.travelDate || "-"}
+                        </span>
+
+                    </div>
+
+
+                    <div class="booking-row">
+
+                        <span class="label">
+                            Number of Persons
+                        </span>
+
+                        <span class="value">
+                            ${booking.numberOfPersons}
+                        </span>
+
+                    </div>
+
+
+                    <div class="booking-row">
+
+                        <span class="label">
+                            Total Amount
+                        </span>
+
+                        <span class="value">
+                            ₹${Number(
+                                booking.totalAmount || 0
+                            ).toFixed(2)}
+                        </span>
+
+                    </div>
+
+
+                    <div class="booking-row">
+
+                        <span class="label">
+                            Booking Status
+                        </span>
+
+                        <span class="value">
+
+                            <span
+                                class="status ${statusClass}">
+
+                                ${status}
+
+                            </span>
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="action-area">
+
+                        ${actionButtons}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+
+
+
+        /* ==========================================
+           ADVANCE PAYMENT
+        ========================================== */
+
+        function openAdvancePayment(
+            bookingId
+        ) {
+
+            window.location.href =
+                "/advance-payment.html?bookingId="
+                + bookingId;
+
+        }
+
+
+
+        /* ==========================================
+           FINAL PAYMENT
+        ========================================== */
+
+        function openFinalPayment(
+            bookingId
+        ) {
+
+            window.location.href =
+                "/final-payment.html?bookingId="
+                + bookingId;
+
+        }
+
+
+
+        /* ==========================================
+           TRACKING
+        ========================================== */
+
+        function openTracking(
+            bookingId
+        ) {
+
+            sessionStorage.setItem(
+                "trackingBookingId",
+                bookingId
+            );
+
+
+            window.location.href =
+                "/tracking.html?bookingId="
+                + bookingId;
+
+        }
+
+
+
+        /* ==========================================
+           TOURS
+        ========================================== */
+
+        function openTours() {
+
+            window.location.href =
+                "/tours.html";
+
+        }
+
+
+
+        /* ==========================================
+           START
+        ========================================== */
+
+        loadBookings();
+
+    </script>
+
+
+</body>
+
+</html>

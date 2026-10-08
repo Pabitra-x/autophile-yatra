@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        /* ================= NOTIFICATION BADGE ================= */
+
+        .notification-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            min-width: 22px;
+            height: 22px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .notification-badge.hidden {
+            display: none;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* ================= LAYOUT ================= */
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            padding: 20px 0;
+        }
+
+        .sidebar h3 {
+            color: #9ca3af;
+            padding: 10px 22px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            padding: 14px 22px;
+            color: #e5e7eb;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu li:hover,
+        .menu li.active {
+            background: #374151;
+            color: white;
+        }
+
+        /* ================= SIDEBAR NOTIFICATION BADGE ================= */
+
+        .sidebar-notification {
+            float: right;
+            background: #ef4444;
+            color: white;
+            min-width: 21px;
+            height: 21px;
+            padding: 2px 6px;
+            border-radius: 20px;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .sidebar-notification.hidden {
+            display: none;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card .icon {
+            font-size: 30px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            color: #6b7280;
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .card .number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #111827;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .section h2 {
+            color: #111827;
+            margin-bottom: 20px;
+        }
+
+        /* ================= QUICK ACTIONS ================= */
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .action {
+            padding: 18px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .action:hover {
+            background: #f9fafb;
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .action-title {
+            font-weight: bold;
+            color: #374151;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .status {
+            padding: 18px;
+            border-radius: 8px;
+            background: #f9fafb;
+        }
+
+        .status strong {
+            display: block;
+            font-size: 22px;
+            margin-bottom: 5px;
+        }
+
+        .status span {
+            color: #6b7280;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            color: #6b7280;
+        }
+
+        .error-message {
+            color: red;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1000px) {
+
+            .cards {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .status-box {
+                grid-template-columns: 1fr;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .admin-info span {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🚗 Autophile Yatra
+        </div>
+
+        <div class="admin-info">
+
+            <span>
+                👨‍💼 Admin
+            </span>
+
+            <!-- NOTIFICATION COUNT -->
+
+            <span
+                id="navbarNotification"
+                class="notification-link"
+                onclick="goTo('admin-notifications.html')">
+
+                🔔
+
+                <span
+                    id="navbarNotificationBadge"
+                    class="notification-badge hidden">
+                    0
+                </span>
+
+            </span>
+
+            <button
+                class="logout-btn"
+                onclick="logout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ================= MAIN LAYOUT ================= -->
+
+    <div class="layout">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <h3>
+                Management
+            </h3>
+
+            <ul class="menu">
+
+                <li
+                    class="active"
+                    onclick="goTo('admin-dashboard.html')">
+
+                    📊 Dashboard
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-customer-requests.html')">
+
+                    👥 Customer Requests
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-customers.html')">
+
+                    👤 All Customers
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-tours.html')">
+
+                    🗺️ Destinations & Tours
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-bookings.html')">
+
+                    📋 Manage Bookings
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-driver-assignment.html')">
+
+                    🚗 Driver & Vehicle
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-drivers.html')">
+
+                    👨‍✈️ Manage Drivers
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-tracking.html')">
+
+                    📍 Live Trip Tracking
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-payments.html')">
+
+                    💳 Payments
+
+                </li>
+
+                <!-- NOTIFICATIONS -->
+
+                <li
+                    onclick="goTo('admin-notifications.html')">
+
+                    🔔 Notifications
+
+                    <span
+                        id="sidebarNotificationBadge"
+                        class="sidebar-notification hidden">
+                        0
+                    </span>
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-reviews.html')">
+
+                    ⭐ Reviews & Feedback
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-reports.html')">
+
+                    📈 Reports
+
+                </li>
+
+                <li
+                    onclick="goTo('admin-profile.html')">
+
+                    👨‍💼 Admin Profile
+
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ================= CONTENT ================= -->
+
+        <main class="content">
+
+            <div class="page-title">
+
+                <h1>
+                    Dashboard Overview
+                </h1>
+
+                <p>
+                    Welcome to the Autophile Yatra administration panel.
+                </p>
+
+            </div>
+
+            <!-- ERROR MESSAGE -->
+
+            <div
+                id="errorMessage"
+                class="error-message">
+            </div>
+
+            <!-- ================= STATISTICS ================= -->
+
+            <div class="cards">
+
+                <!-- TOTAL CUSTOMERS -->
+
+                <div class="card">
+
+                    <div class="icon">
+                        👥
+                    </div>
+
+                    <h3>
+                        Total Customers
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="totalCustomers">
+
+                        <span class="loading">
+                            Loading...
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- TOTAL BOOKINGS -->
+
+                <div class="card">
+
+                    <div class="icon">
+                        📋
+                    </div>
+
+                    <h3>
+                        Total Bookings
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="totalBookings">
+
+                        <span class="loading">
+                            Loading...
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- PENDING REQUESTS -->
+
+                <div class="card">
+
+                    <div class="icon">
+                        ⏳
+                    </div>
+
+                    <h3>
+                        Pending Requests
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="pendingRequests">
+
+                        <span class="loading">
+                            Loading...
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <!-- TOTAL REVENUE -->
+
+                <div class="card">
+
+                    <div class="icon">
+                        💰
+                    </div>
+
+                    <h3>
+                        Total Revenue
+                    </h3>
+
+                    <div
+                        class="number"
+                        id="totalRevenue">
+
+                        <span class="loading">
+                            Loading...
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================= QUICK ACTIONS ================= -->
+
+            <div class="section">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <div class="quick-actions">
+
+                    <div
+                        class="action"
+                        onclick="goTo('admin-customer-requests.html')">
+
+                        <div class="action-icon">
+                            👥
+                        </div>
+
+                        <div class="action-title">
+                            Customer Requests
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="action"
+                        onclick="goTo('admin-bookings.html')">
+
+                        <div class="action-icon">
+                            📋
+                        </div>
+
+                        <div class="action-title">
+                            Manage Bookings
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="action"
+                        onclick="goTo('admin-driver-assignment.html')">
+
+                        <div class="action-icon">
+                            🚗
+                        </div>
+
+                        <div class="action-title">
+                            Assign Driver
+                        </div>
+
+                    </div>
+
+                    <div
+                        class="action"
+                        onclick="goTo('admin-payments.html')">
+
+                        <div class="action-icon">
+                            💳
+                        </div>
+
+                        <div class="action-title">
+                            Manage Payments
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- ================= BOOKING STATUS ================= -->
+
+            <div class="section">
+
+                <h2>
+                    Booking Status
+                </h2>
+
+                <div class="status-box">
+
+                    <div class="status">
+
+                        <strong id="pendingCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Pending
+                        </span>
+
+                    </div>
+
+                    <div class="status">
+
+                        <strong id="approvedCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Approved
+                        </span>
+
+                    </div>
+
+                    <div class="status">
+
+                        <strong id="completedCount">
+                            0
+                        </strong>
+
+                        <span>
+                            Completed
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        // =====================================================
+        // ADMIN LOGIN CHECK
+        // =====================================================
+
+        const adminId =
+            sessionStorage.getItem("adminId");
+
+        if (!adminId) {
+
+            alert(
+                "Admin login required."
+            );
+
+            window.location.href =
+                "admin-login.html";
+        }
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
+
+        function goTo(page) {
+
+            window.location.href = page;
+
+        }
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        function logout() {
+
+            sessionStorage.clear();
+
+            window.location.href =
+                "admin-login.html";
+
+        }
+
+        // =====================================================
+        // LOAD DASHBOARD STATISTICS
+        // =====================================================
+
+        async function loadDashboard() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/admin/dashboard"
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load dashboard data."
+                    );
+                }
+
+                const data =
+                    await response.json();
+
+                console.log(
+                    "Dashboard data:",
+                    data
+                );
+
+                // =================================================
+                // STATISTICS
+                // =================================================
+
+                document.getElementById(
+                    "totalCustomers"
+                ).innerText =
+                    data.totalCustomers ?? 0;
+
+                document.getElementById(
+                    "totalBookings"
+                ).innerText =
+                    data.totalBookings ?? 0;
+
+                document.getElementById(
+                    "pendingRequests"
+                ).innerText =
+                    data.pendingRequests ?? 0;
+
+                document.getElementById(
+                    "totalRevenue"
+                ).innerText =
+                    "₹" +
+                    Number(
+                        data.totalRevenue ?? 0
+                    ).toFixed(2);
+
+                // =================================================
+                // BOOKING STATUS
+                // =================================================
+
+                document.getElementById(
+                    "pendingCount"
+                ).innerText =
+                    data.pendingRequests ?? 0;
+
+                document.getElementById(
+                    "approvedCount"
+                ).innerText =
+                    data.approvedBookings ?? 0;
+
+                document.getElementById(
+                    "completedCount"
+                ).innerText =
+                    data.completedBookings ?? 0;
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Dashboard error:",
+                    error
+                );
+
+                const errorMessage =
+                    document.getElementById(
+                        "errorMessage"
+                    );
+
+                errorMessage.innerText =
+                    "Unable to load dashboard data. Please check that the Spring Boot application is running.";
+
+                errorMessage.style.display =
+                    "block";
+
+            }
+
+        }
+
+        // =====================================================
+        // LOAD UNREAD NOTIFICATION COUNT
+        // =====================================================
+
+        async function loadNotificationCount() {
+
+            if (!adminId) {
+                return;
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/notifications/admin/"
+                        + encodeURIComponent(adminId)
+                        + "/unread-count"
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load notification count."
+                    );
+                }
+
+                const count =
+                    await response.json();
+
+                updateNotificationBadge(
+                    Number(count) || 0
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Notification count error:",
+                    error
+                );
+
+            }
+
+        }
+
+        // =====================================================
+        // UPDATE NOTIFICATION BADGE
+        // =====================================================
+
+        function updateNotificationBadge(
+            count
+        ) {
+
+            const navbarBadge =
+                document.getElementById(
+                    "navbarNotificationBadge"
+                );
+
+            const sidebarBadge =
+                document.getElementById(
+                    "sidebarNotificationBadge"
+                );
+
+            if (count > 0) {
+
+                navbarBadge.innerText =
+                    count;
+
+                navbarBadge.classList.remove(
+                    "hidden"
+                );
+
+                sidebarBadge.innerText =
+                    count;
+
+                sidebarBadge.classList.remove(
+                    "hidden"
+                );
+
+            }
+            else {
+
+                navbarBadge.classList.add(
+                    "hidden"
+                );
+
+                sidebarBadge.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+        // =====================================================
+        // INITIAL LOAD
+        // =====================================================
+
+        loadDashboard();
+
+        loadNotificationCount();
+
+        // =====================================================
+        // REFRESH NOTIFICATION COUNT
+        // =====================================================
+
+        setInterval(
+            loadNotificationCount,
+            10000
+        );
+
+    </script>
+
+</body>
+
+</html>

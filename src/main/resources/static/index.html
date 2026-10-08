@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Autophile Yatra - Travel & Tours</title>
+
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+
+        /* ================= NAVBAR ================= */
+
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+
+            z-index: 1000;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 18px 7%;
+
+            background: rgba(0, 91, 150, 0.95);
+        }
+
+
+        .logo {
+            color: white;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+
+        .nav-links a:hover {
+            color: #ffd700;
+        }
+
+
+        /* ================= HERO ================= */
+
+        .hero {
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            text-align: center;
+
+            color: white;
+
+            background:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.45),
+                    rgba(0, 0, 0, 0.45)
+                ),
+                url("/images/manali.jpg");
+
+            background-size: cover;
+            background-position: center;
+        }
+
+
+        .hero-content h1 {
+            font-size: 55px;
+            margin-bottom: 15px;
+        }
+
+
+        .hero-content p {
+            font-size: 22px;
+            margin-bottom: 30px;
+        }
+
+
+        .register-btn {
+            display: inline-block;
+
+            padding: 14px 30px;
+
+            background: #ff9800;
+
+            color: white;
+
+            text-decoration: none;
+
+            border-radius: 7px;
+
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        .register-btn:hover {
+            background: #e68900;
+        }
+
+
+        /* ================= SECTIONS ================= */
+
+        section {
+            padding: 80px 7%;
+        }
+
+
+        .section-title {
+            text-align: center;
+
+            font-size: 35px;
+
+            color: #005b96;
+
+            margin-bottom: 40px;
+        }
+
+
+        /* ================= DESTINATIONS ================= */
+
+        .destination-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 25px;
+        }
+
+
+        .destination-card {
+            background: white;
+
+            border-radius: 12px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.15);
+
+            transition: 0.3s;
+        }
+
+
+        .destination-card:hover {
+            transform: translateY(-8px);
+        }
+
+
+        .destination-card img {
+            width: 100%;
+            height: 210px;
+
+            object-fit: cover;
+        }
+
+
+        .destination-card-content {
+            padding: 20px;
+        }
+
+
+        .destination-card h3 {
+            color: #005b96;
+
+            margin-bottom: 10px;
+        }
+
+
+        .destination-card p {
+            line-height: 1.6;
+        }
+
+
+        /* ================= WHY US ================= */
+
+        #why-us {
+            background: #f4f9fc;
+        }
+
+
+        .why-container {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 25px;
+        }
+
+
+        .why-card {
+            background: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            box-shadow:
+                0 5px 15px rgba(0,0,0,0.1);
+        }
+
+
+        .why-card h3 {
+            color: #005b96;
+
+            margin-bottom: 12px;
+        }
+
+
+        .why-card p {
+            line-height: 1.6;
+        }
+
+
+        /* ================= REGISTER ================= */
+
+        #register-section {
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    rgba(0, 91, 150, 0.9),
+                    rgba(0, 91, 150, 0.9)
+                );
+
+            color: white;
+        }
+
+
+        #register-section h2 {
+            font-size: 35px;
+
+            margin-bottom: 15px;
+        }
+
+
+        #register-section p {
+            font-size: 18px;
+
+            margin-bottom: 25px;
+        }
+
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            background: #002f4f;
+
+            color: white;
+
+            text-align: center;
+
+            padding: 25px;
+        }
+
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            .destination-container {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+
+            .why-container {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            nav {
+                flex-direction: column;
+
+                gap: 15px;
+            }
+
+
+            .nav-links {
+                gap: 15px;
+
+                flex-wrap: wrap;
+
+                justify-content: center;
+            }
+
+
+            .hero-content h1 {
+                font-size: 38px;
+            }
+
+
+            .hero-content p {
+                font-size: 18px;
+            }
+
+
+            .destination-container,
+            .why-container {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- ================= NAVBAR ================= -->
+
+<nav>
+
+    <div class="logo">
+        Autophile Yatra
+    </div>
+
+
+    <ul class="nav-links">
+
+        <li>
+            <a href="#home">
+                Home
+            </a>
+        </li>
+
+
+        <li>
+            <a href="#destinations">
+                Destinations
+            </a>
+        </li>
+
+
+        <li>
+            <a href="#why-us">
+                Why Us
+            </a>
+        </li>
+
+
+        <li>
+            <a href="/register.html">
+                Register
+            </a>
+        </li>
+
+
+        <li>
+            <a href="/admin-login.html">
+                Admin Login
+            </a>
+        </li>
+
+
+        <!-- DRIVER LOGIN ADDED -->
+
+        <li>
+            <a href="/driver-login.html">
+                Driver Login
+            </a>
+        </li>
+
+    </ul>
+
+</nav>
+
+
+<!-- ================= HOME ================= -->
+
+<section
+    class="hero"
+    id="home">
+
+    <div class="hero-content">
+
+        <h1>
+            Explore India With Us
+        </h1>
+
+
+        <p>
+            Discover beautiful destinations,
+            unforgettable journeys and amazing experiences.
+        </p>
+
+
+        <a
+            href="/register.html"
+            class="register-btn">
+
+            Start Your Journey
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<!-- ================= DESTINATIONS ================= -->
+
+<section id="destinations">
+
+    <h2 class="section-title">
+        Popular Destinations
+    </h2>
+
+
+    <div class="destination-container">
+
+
+        <!-- GOA -->
+
+        <div class="destination-card">
+
+            <img
+                src="/images/goa.jpg"
+                alt="Goa">
+
+
+            <div class="destination-card-content">
+
+                <h3>
+                    Goa
+                </h3>
+
+
+                <p>
+                    Enjoy beautiful beaches,
+                    nightlife and unforgettable
+                    coastal experiences.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- KERALA -->
+
+        <div class="destination-card">
+
+            <img
+                src="/images/kerala.jpg"
+                alt="Kerala">
+
+
+            <div class="destination-card-content">
+
+                <h3>
+                    Kerala
+                </h3>
+
+
+                <p>
+                    Explore peaceful backwaters,
+                    nature and beautiful landscapes.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- MANALI -->
+
+        <div class="destination-card">
+
+            <img
+                src="/images/manali.jpg"
+                alt="Manali">
+
+
+            <div class="destination-card-content">
+
+                <h3>
+                    Manali
+                </h3>
+
+
+                <p>
+                    Experience mountains,
+                    snow and exciting adventures.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- RAJASTHAN -->
+
+        <div class="destination-card">
+
+            <img
+                src="/images/rajasthan.jpg"
+                alt="Rajasthan">
+
+
+            <div class="destination-card-content">
+
+                <h3>
+                    Rajasthan
+                </h3>
+
+
+                <p>
+                    Discover forts, palaces,
+                    culture and heritage.
+                </p>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= WHY US ================= -->
+
+<section id="why-us">
+
+    <h2 class="section-title">
+        Why Choose Autophile Yatra?
+    </h2>
+
+
+    <div class="why-container">
+
+
+        <div class="why-card">
+
+            <h3>
+                Trusted Travel
+            </h3>
+
+
+            <p>
+                We provide reliable travel
+                experiences and carefully
+                planned tour packages.
+            </p>
+
+        </div>
+
+
+        <div class="why-card">
+
+            <h3>
+                Easy Booking
+            </h3>
+
+
+            <p>
+                Select your destination,
+                choose your travel date
+                and book your trip easily.
+            </p>
+
+        </div>
+
+
+        <div class="why-card">
+
+            <h3>
+                Customer Support
+            </h3>
+
+
+            <p>
+                Our team is available to
+                help customers throughout
+                their travel journey.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+<!-- ================= REGISTER ================= -->
+
+<section id="register-section">
+
+    <h2>
+        Ready To Start Your Journey?
+    </h2>
+
+
+    <p>
+        Create your account and explore
+        amazing destinations with Autophile Yatra.
+    </p>
+
+
+    <a
+        href="/register.html"
+        class="register-btn">
+
+        Register Now
+
+    </a>
+
+</section>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <p>
+        © 2026 Autophile Yatra.
+        All Rights Reserved.
+    </p>
+
+</footer>
+
+
+</body>
+
+</html>

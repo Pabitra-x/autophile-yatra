@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>All Customers - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* ================= LAYOUT ================= */
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            padding: 20px 0;
+        }
+
+        .sidebar h3 {
+            color: #9ca3af;
+            padding: 10px 22px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            padding: 14px 22px;
+            color: #e5e7eb;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu li:hover,
+        .menu li.active {
+            background: #374151;
+            color: white;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        /* ================= TABLE SECTION ================= */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            color: #111827;
+        }
+
+        .refresh-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .refresh-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 750px;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            background: #dcfce7;
+            color: #166534;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        .error {
+            color: red;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .admin-info {
+                gap: 8px;
+            }
+
+            .admin-info span {
+                display: none;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🚗 Autophile Yatra
+        </div>
+
+        <div class="admin-info">
+
+            <span>
+                👨‍💼 Admin
+            </span>
+
+            <button class="logout-btn"
+                    onclick="logout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= LAYOUT ================= -->
+
+    <div class="layout">
+
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <h3>
+                Management
+            </h3>
+
+            <ul class="menu">
+
+                <li onclick="goTo('admin-dashboard.html')">
+                    📊 Dashboard
+                </li>
+
+                <li onclick="goTo('admin-customer-requests.html')">
+                    👥 Customer Requests
+                </li>
+
+                <li class="active">
+                    👤 All Customers
+                </li>
+
+                <li onclick="goTo('admin-tours.html')">
+                    🗺️ Destinations & Tours
+                </li>
+
+                <li onclick="goTo('admin-bookings.html')">
+                    📋 Manage Bookings
+                </li>
+
+                <li onclick="goTo('admin-driver-assignment.html')">
+                    🚗 Driver & Vehicle
+                </li>
+
+                <li onclick="goTo('admin-tracking.html')">
+                    📍 Live Tracking
+                </li>
+
+                <li onclick="goTo('admin-payments.html')">
+                    💳 Payments
+                </li>
+
+                <li onclick="goTo('admin-notifications.html')">
+                    🔔 Notifications
+                </li>
+
+                <li onclick="goTo('admin-reviews.html')">
+                    ⭐ Reviews & Feedback
+                </li>
+
+                <li onclick="goTo('admin-reports.html')">
+                    📈 Reports
+                </li>
+
+                <li onclick="goTo('admin-profile.html')">
+                    👨‍💼 Admin Profile
+                </li>
+
+            </ul>
+
+        </aside>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <main class="content">
+
+
+            <div class="page-title">
+
+                <h1>
+                    All Customers
+                </h1>
+
+                <p>
+                    View all registered Autophile Yatra customers.
+                </p>
+
+            </div>
+
+
+            <!-- ================= CUSTOMER TABLE ================= -->
+
+            <div class="section">
+
+                <div class="section-header">
+
+                    <h2>
+                        Customer List
+                    </h2>
+
+                    <button class="refresh-btn"
+                            onclick="loadCustomers()">
+
+                        🔄 Refresh
+
+                    </button>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    Customer ID
+                                </th>
+
+                                <th>
+                                    Name
+                                </th>
+
+                                <th>
+                                    Date of Birth
+                                </th>
+
+                                <th>
+                                    Email
+                                </th>
+
+                                <th>
+                                    Mobile
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="customerTableBody">
+
+                            <tr>
+
+                                <td colspan="6"
+                                    class="message">
+
+                                    Loading customers...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        // =====================================================
+        // ADMIN LOGIN CHECK
+        // =====================================================
+
+        const adminId =
+            sessionStorage.getItem("adminId");
+
+
+        if (!adminId) {
+
+            alert("Admin login required.");
+
+            window.location.href =
+                "admin-login.html";
+        }
+
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
+
+        function goTo(page) {
+
+            window.location.href = page;
+
+        }
+
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        function logout() {
+
+            sessionStorage.clear();
+
+            window.location.href =
+                "admin-login.html";
+
+        }
+
+
+        // =====================================================
+        // LOAD CUSTOMERS
+        // =====================================================
+
+        async function loadCustomers() {
+
+            const tableBody =
+                document.getElementById(
+                    "customerTableBody"
+                );
+
+
+            tableBody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="6"
+                        class="message">
+
+                        Loading customers...
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            try {
+
+                const response =
+                    await fetch("/api/customers");
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load customers."
+                    );
+
+                }
+
+
+                const customers =
+                    await response.json();
+
+
+                // =================================================
+                // NO CUSTOMERS
+                // =================================================
+
+                if (!customers ||
+                    customers.length === 0) {
+
+                    tableBody.innerHTML = `
+
+                        <tr>
+
+                            <td colspan="6"
+                                class="message">
+
+                                No customers found.
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                // =================================================
+                // CLEAR TABLE
+                // =================================================
+
+                tableBody.innerHTML = "";
+
+
+                // =================================================
+                // ADD CUSTOMERS
+                // =================================================
+
+                customers.forEach(function(customer) {
+
+
+                    const row =
+                        document.createElement("tr");
+
+
+                    /*
+                     * IMPORTANT:
+                     * Customer entity uses "id"
+                     * for the primary key.
+                     */
+
+                    const customerId =
+                        customer.id ?? "-";
+
+
+                    const name =
+                        customer.name ?? "-";
+
+
+                    const dateOfBirth =
+                        customer.dateOfBirth ?? "-";
+
+
+                    const email =
+                        customer.email ?? "-";
+
+
+                    const mobile =
+                        customer.mobile ?? "-";
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${customerId}
+                        </td>
+
+                        <td>
+                            ${name}
+                        </td>
+
+                        <td>
+                            ${dateOfBirth}
+                        </td>
+
+                        <td>
+                            ${email}
+                        </td>
+
+                        <td>
+                            ${mobile}
+                        </td>
+
+                        <td>
+
+                            <span class="status">
+                                ACTIVE
+                            </span>
+
+                        </td>
+
+                    `;
+
+
+                    tableBody.appendChild(row);
+
+                });
+
+
+            } catch (error) {
+
+                console.error(
+                    "Customer loading error:",
+                    error
+                );
+
+
+                tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="6"
+                            class="message error">
+
+                            Unable to load customers.
+
+                            <br>
+                            <br>
+
+                            ${error.message}
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+        // =====================================================
+        // LOAD WHEN PAGE OPENS
+        // =====================================================
+
+        loadCustomers();
+
+
+    </script>
+
+
+</body>
+
+</html>

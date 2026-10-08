@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Assign Driver - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .header {
+            background: #0d6efd;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0 0 8px;
+        }
+
+        .header p {
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 700px;
+            margin: 30px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 0;
+            text-align: center;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            border: none;
+            border-radius: 6px;
+            background: #0d6efd;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #0b5ed7;
+        }
+
+        .view-btn {
+            background: #198754;
+        }
+
+        .view-btn:hover {
+            background: #157347;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+        }
+
+        .delete-btn:hover {
+            background: #bb2d3b;
+        }
+
+        .back {
+            background: #6c757d;
+        }
+
+        .back:hover {
+            background: #5c636a;
+        }
+
+        .message {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        .info {
+            color: #0d6efd;
+        }
+
+        .assignment-box {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .assignment-box p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+
+        .assignment-box strong {
+            color: #333;
+        }
+
+        @media (max-width: 500px) {
+
+            .container {
+                width: 95%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>Autophile Yatra</h1>
+
+    <p>Admin - Driver & Vehicle Assignment</p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- ASSIGN DRIVER -->
+
+    <div class="card">
+
+        <h2>Assign Driver & Vehicle</h2>
+
+
+        <label for="bookingId">
+            Booking ID
+        </label>
+
+        <input
+            type="number"
+            id="bookingId"
+            placeholder="Enter Booking ID">
+
+
+        <label for="driverName">
+            Driver Name
+        </label>
+
+        <input
+            type="text"
+            id="driverName"
+            placeholder="Enter Driver Name">
+
+
+        <label for="vehicleNumber">
+            Vehicle Number
+        </label>
+
+        <input
+            type="text"
+            id="vehicleNumber"
+            placeholder="Example: OD02AB1234">
+
+
+        <button onclick="assignDriver()">
+            Assign Driver
+        </button>
+
+
+        <button
+            class="view-btn"
+            onclick="getAssignment()">
+
+            View Current Assignment
+
+        </button>
+
+
+        <button
+            class="delete-btn"
+            onclick="deleteAssignment()">
+
+            Remove Assignment
+
+        </button>
+
+
+        <div
+            id="message"
+            class="message">
+        </div>
+
+
+        <!-- CURRENT ASSIGNMENT -->
+
+        <div
+            id="assignmentBox"
+            class="assignment-box">
+
+            <h3>Current Assignment</h3>
+
+            <p>
+                <strong>Assignment ID:</strong>
+                <span id="assignmentId">-</span>
+            </p>
+
+            <p>
+                <strong>Booking ID:</strong>
+                <span id="assignedBookingId">-</span>
+            </p>
+
+            <p>
+                <strong>Driver:</strong>
+                <span id="assignedDriver">-</span>
+            </p>
+
+            <p>
+                <strong>Vehicle:</strong>
+                <span id="assignedVehicle">-</span>
+            </p>
+
+        </div>
+
+
+        <button
+            class="back"
+            onclick="goBack()">
+
+            Back to Admin Dashboard
+
+        </button>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    // ==================================================
+    // MESSAGE
+    // ==================================================
+
+    function showMessage(text, type) {
+
+        const message =
+            document.getElementById("message");
+
+        message.textContent = text;
+
+        message.className =
+            "message " + type;
+    }
+
+
+    // ==================================================
+    // GET BOOKING ID
+    // ==================================================
+
+    function getBookingId() {
+
+        const bookingId =
+            document.getElementById("bookingId").value.trim();
+
+
+        if (!bookingId) {
+
+            showMessage(
+                "Please enter Booking ID.",
+                "error"
+            );
+
+            return null;
+        }
+
+
+        return bookingId;
+    }
+
+
+    // ==================================================
+    // ASSIGN DRIVER
+    // ==================================================
+
+    function assignDriver() {
+
+        const bookingId = getBookingId();
+
+        if (!bookingId) {
+            return;
+        }
+
+
+        const driverName =
+            document.getElementById("driverName")
+                .value.trim();
+
+
+        const vehicleNumber =
+            document.getElementById("vehicleNumber")
+                .value.trim();
+
+
+        if (!driverName) {
+
+            showMessage(
+                "Please enter Driver Name.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if (!vehicleNumber) {
+
+            showMessage(
+                "Please enter Vehicle Number.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const url =
+            "/api/driver-assignment/assign"
+            + "?bookingId="
+            + encodeURIComponent(bookingId)
+            + "&driverName="
+            + encodeURIComponent(driverName)
+            + "&vehicleNumber="
+            + encodeURIComponent(vehicleNumber);
+
+
+        showMessage(
+            "Assigning driver and vehicle...",
+            "info"
+        );
+
+
+        fetch(url, {
+            method: "POST"
+        })
+
+        .then(async response => {
+
+            /*
+             * IMPORTANT:
+             * Read the backend error message instead of
+             * replacing it with a generic message.
+             */
+
+            const responseText =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    responseText ||
+                    "Unable to assign driver and vehicle."
+                );
+            }
+
+
+            /*
+             * Backend returns JSON for successful assignment.
+             */
+
+            try {
+
+                return JSON.parse(responseText);
+
+            } catch (error) {
+
+                throw new Error(
+                    "Invalid response received from server."
+                );
+            }
+
+        })
+
+
+        .then(data => {
+
+            console.log(
+                "Assignment:",
+                data
+            );
+
+
+            showMessage(
+                "Driver and vehicle assigned successfully!",
+                "success"
+            );
+
+
+            // Show the new assignment
+
+            displayAssignment(data);
+
+        })
+
+
+        .catch(error => {
+
+            console.error(
+                "Assignment Error:",
+                error
+            );
+
+
+            /*
+             * SHOW THE REAL BACKEND ERROR
+             */
+
+            showMessage(
+                error.message ||
+                "Error assigning driver and vehicle.",
+                "error"
+            );
+
+        });
+
+    }
+
+
+    // ==================================================
+    // GET CURRENT ASSIGNMENT
+    // ==================================================
+
+    function getAssignment() {
+
+        const bookingId = getBookingId();
+
+        if (!bookingId) {
+            return;
+        }
+
+
+        showMessage(
+            "Loading current assignment...",
+            "info"
+        );
+
+
+        fetch(
+            "/api/driver-assignment/" +
+            encodeURIComponent(bookingId)
+        )
+
+        .then(response => {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Assignment not found."
+                );
+            }
+
+            return response.json();
+
+        })
+
+        .then(data => {
+
+            console.log(
+                "Current Assignment:",
+                data
+            );
+
+
+            displayAssignment(data);
+
+
+            showMessage(
+                "Current assignment loaded.",
+                "success"
+            );
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "Get Assignment Error:",
+                error
+            );
+
+
+            document.getElementById(
+                "assignmentBox"
+            ).style.display = "none";
+
+
+            showMessage(
+                "No driver assignment found for this booking.",
+                "error"
+            );
+
+        });
+
+    }
+
+
+    // ==================================================
+    // DISPLAY ASSIGNMENT
+    // ==================================================
+
+    function displayAssignment(data) {
+
+        document.getElementById(
+            "assignmentId"
+        ).textContent =
+            data.assignmentId ?? "-";
+
+
+        document.getElementById(
+            "assignedBookingId"
+        ).textContent =
+            data.bookingId ?? "-";
+
+
+        document.getElementById(
+            "assignedDriver"
+        ).textContent =
+            data.driverName ?? "Not available";
+
+
+        document.getElementById(
+            "assignedVehicle"
+        ).textContent =
+            data.vehicleNumber ?? "Not available";
+
+
+        document.getElementById(
+            "assignmentBox"
+        ).style.display = "block";
+
+    }
+
+
+    // ==================================================
+    // DELETE ASSIGNMENT
+    // ==================================================
+
+    function deleteAssignment() {
+
+        const bookingId = getBookingId();
+
+        if (!bookingId) {
+            return;
+        }
+
+
+        const confirmDelete =
+            confirm(
+                "Are you sure you want to remove the driver assignment?"
+            );
+
+
+        if (!confirmDelete) {
+            return;
+        }
+
+
+        showMessage(
+            "Removing assignment...",
+            "info"
+        );
+
+
+        fetch(
+            "/api/driver-assignment/" +
+            encodeURIComponent(bookingId),
+            {
+                method: "DELETE"
+            }
+        )
+
+        .then(response => {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to remove assignment."
+                );
+            }
+
+            return response.text();
+
+        })
+
+        .then(data => {
+
+            console.log(
+                "Delete response:",
+                data
+            );
+
+
+            document.getElementById(
+                "assignmentBox"
+            ).style.display = "none";
+
+
+            document.getElementById(
+                "driverName"
+            ).value = "";
+
+
+            document.getElementById(
+                "vehicleNumber"
+            ).value = "";
+
+
+            showMessage(
+                "Driver assignment removed successfully.",
+                "success"
+            );
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "Delete Assignment Error:",
+                error
+            );
+
+
+            showMessage(
+                error.message ||
+                "Error removing driver assignment.",
+                "error"
+            );
+
+        });
+
+    }
+
+
+    // ==================================================
+    // BACK TO ADMIN DASHBOARD
+    // ==================================================
+
+    function goBack() {
+
+        window.location.href =
+            "/admin-dashboard.html";
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

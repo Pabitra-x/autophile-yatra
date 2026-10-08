@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Requests - Autophile Yatra</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: #374151;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .back-btn:hover {
+            background: #4b5563;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        h1 {
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 25px;
+        }
+
+        .message {
+            display: none;
+            padding: 12px 15px;
+            border-radius: 7px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1100px;
+        }
+
+        th {
+            background: #1f2937;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+
+        td {
+            padding: 14px 15px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .status {
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .approve-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .approve-btn:hover {
+            background: #15803d;
+        }
+
+        .reject-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .reject-btn:hover {
+            background: #b91c1c;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+            font-size: 17px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .amount {
+            font-weight: bold;
+        }
+
+        .customer-name {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <div class="navbar">
+
+        <div class="logo">
+            🚗 Autophile Yatra
+        </div>
+
+        <button class="back-btn" onclick="goBack()">
+            ← Dashboard
+        </button>
+
+    </div>
+
+
+    <!-- MAIN CONTENT -->
+    <div class="container">
+
+        <h1>Customer Booking Requests</h1>
+
+        <p class="subtitle">
+            Review customer bookings and approve or reject requests.
+        </p>
+
+        <div id="message" class="message"></div>
+
+
+        <div class="table-container">
+
+            <div id="loading" class="loading">
+                Loading customer requests...
+            </div>
+
+
+            <table id="bookingTable" style="display:none;">
+
+                <thead>
+
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer</th>
+                        <th>Customer ID</th>
+                        <th>Tour ID</th>
+                        <th>Travel Date</th>
+                        <th>Persons</th>
+                        <th>Total Amount</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="bookingBody">
+                </tbody>
+
+            </table>
+
+
+            <div id="emptyMessage"
+                 class="empty"
+                 style="display:none;">
+
+                No pending booking requests found.
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <script>
+
+        /* ==========================================
+           ADMIN LOGIN CHECK
+        ========================================== */
+
+        const adminId = sessionStorage.getItem("adminId");
+
+        if (!adminId) {
+
+            alert("Admin login required.");
+
+            window.location.href = "admin-login.html";
+        }
+
+
+        /* ==========================================
+           API
+        ========================================== */
+
+        const API_URL = "/api/bookings/admin/pending";
+
+
+        /* ==========================================
+           SHOW MESSAGE
+        ========================================== */
+
+        function showMessage(message, type) {
+
+            const messageBox =
+                document.getElementById("message");
+
+            messageBox.textContent = message;
+
+            messageBox.className =
+                "message " + type;
+
+            messageBox.style.display = "block";
+
+            setTimeout(function () {
+
+                messageBox.style.display = "none";
+
+            }, 3000);
+        }
+
+
+        /* ==========================================
+           LOAD PENDING BOOKINGS
+        ========================================== */
+
+        async function loadBookings() {
+
+            const loading =
+                document.getElementById("loading");
+
+            const table =
+                document.getElementById("bookingTable");
+
+            const emptyMessage =
+                document.getElementById("emptyMessage");
+
+            const bookingBody =
+                document.getElementById("bookingBody");
+
+
+            loading.style.display = "block";
+
+            table.style.display = "none";
+
+            emptyMessage.style.display = "none";
+
+            bookingBody.innerHTML = "";
+
+
+            try {
+
+                const response =
+                    await fetch(API_URL);
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load booking requests."
+                    );
+                }
+
+
+                const bookings =
+                    await response.json();
+
+
+                loading.style.display = "none";
+
+
+                if (!bookings ||
+                    bookings.length === 0) {
+
+                    emptyMessage.style.display = "block";
+
+                    return;
+                }
+
+
+                table.style.display = "table";
+
+
+                bookings.forEach(function (booking) {
+
+                    const row =
+                        document.createElement("tr");
+
+
+                    const customerName =
+                        booking.customerName ||
+                        "Customer #" +
+                        (booking.customerId || "Unknown");
+
+
+                    const totalAmount =
+                        Number(booking.totalAmount || 0);
+
+
+                    row.innerHTML =
+
+                        "<td>" +
+                        (booking.bookingId || "-") +
+                        "</td>" +
+
+                        "<td class='customer-name'>" +
+                        customerName +
+                        "</td>" +
+
+                        "<td>" +
+                        (booking.customerId || "-") +
+                        "</td>" +
+
+                        "<td>" +
+                        (booking.tourId || "-") +
+                        "</td>" +
+
+                        "<td>" +
+                        (booking.travelDate || "-") +
+                        "</td>" +
+
+                        "<td>" +
+                        (booking.numberOfPersons || 0) +
+                        "</td>" +
+
+                        "<td class='amount'>₹" +
+                        totalAmount.toFixed(2) +
+                        "</td>" +
+
+                        "<td>" +
+
+                        "<span class='status pending'>" +
+                        (booking.bookingStatus || "PENDING") +
+                        "</span>" +
+
+                        "</td>" +
+
+                        "<td>" +
+
+                        "<button class='approve-btn' " +
+                        "onclick='approveBooking(" +
+                        booking.bookingId +
+                        ")'>" +
+
+                        "Approve" +
+
+                        "</button>" +
+
+                        "<button class='reject-btn' " +
+                        "onclick='rejectBooking(" +
+                        booking.bookingId +
+                        ")'>" +
+
+                        "Reject" +
+
+                        "</button>" +
+
+                        "</td>";
+
+
+                    bookingBody.appendChild(row);
+
+                });
+
+
+            } catch (error) {
+
+                loading.style.display = "none";
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        /* ==========================================
+           APPROVE BOOKING
+        ========================================== */
+
+        async function approveBooking(bookingId) {
+
+            const confirmation =
+                confirm(
+                    "Are you sure you want to approve Booking ID "
+                    + bookingId
+                    + "?"
+                );
+
+
+            if (!confirmation) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/bookings/admin/approve/"
+                        + bookingId,
+                        {
+                            method: "PUT"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    let errorMessage =
+                        "Failed to approve booking.";
+
+                    try {
+
+                        const errorText =
+                            await response.text();
+
+                        if (errorText) {
+                            errorMessage = errorText;
+                        }
+
+                    } catch (e) {
+                        // Ignore response parsing error
+                    }
+
+                    throw new Error(errorMessage);
+                }
+
+
+                showMessage(
+                    "Booking approved successfully.",
+                    "success"
+                );
+
+
+                loadBookings();
+
+
+            } catch (error) {
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        /* ==========================================
+           REJECT BOOKING
+        ========================================== */
+
+        async function rejectBooking(bookingId) {
+
+            const confirmation =
+                confirm(
+                    "Are you sure you want to reject Booking ID "
+                    + bookingId
+                    + "?"
+                );
+
+
+            if (!confirmation) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/bookings/admin/reject/"
+                        + bookingId,
+                        {
+                            method: "PUT"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    let errorMessage =
+                        "Failed to reject booking.";
+
+                    try {
+
+                        const errorText =
+                            await response.text();
+
+                        if (errorText) {
+                            errorMessage = errorText;
+                        }
+
+                    } catch (e) {
+                        // Ignore response parsing error
+                    }
+
+                    throw new Error(errorMessage);
+                }
+
+
+                showMessage(
+                    "Booking rejected successfully.",
+                    "success"
+                );
+
+
+                loadBookings();
+
+
+            } catch (error) {
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+
+        /* ==========================================
+           BACK TO ADMIN DASHBOARD
+        ========================================== */
+
+        function goBack() {
+
+            window.location.href =
+                "admin-dashboard.html";
+        }
+
+
+        /* ==========================================
+           LOAD PAGE
+        ========================================== */
+
+        loadBookings();
+
+    </script>
+
+</body>
+
+</html>

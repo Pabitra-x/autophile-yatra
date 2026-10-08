@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Advance Payment - Autophile Yatra</title>
+
+    <!-- Razorpay -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef6ff, #f8fbff);
+            color: #222;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            width: 100%;
+            background: #0b3d91;
+            color: white;
+            padding: 16px 35px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .nav-title {
+            font-size: 18px;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-title h1 {
+            color: #0b3d91;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #666;
+            font-size: 15px;
+        }
+
+        /* ================= CARD ================= */
+
+        .payment-card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+
+            box-shadow: 0 8px 30px rgba(0,0,0,0.10);
+
+            max-width: 700px;
+            margin: auto;
+        }
+
+        .booking-heading {
+            font-size: 22px;
+            font-weight: bold;
+            color: #0b3d91;
+
+            margin-bottom: 25px;
+
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* ================= PAYMENT ROW ================= */
+
+        .payment-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            padding: 16px 0;
+
+            border-bottom: 1px solid #eee;
+        }
+
+        .payment-row:last-child {
+            border-bottom: none;
+        }
+
+        .payment-label {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .payment-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .advance-value {
+            color: #0b7a35;
+            font-size: 24px;
+        }
+
+        .remaining-value {
+            color: #d35400;
+        }
+
+        /* ================= STATUS ================= */
+
+        .status-box {
+            margin-top: 20px;
+            padding: 15px;
+
+            border-radius: 10px;
+
+            text-align: center;
+
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .status-pending {
+            background: #fff4cc;
+            color: #8a6500;
+        }
+
+        .status-success {
+            background: #dff6e5;
+            color: #176b35;
+        }
+
+        .status-error {
+            background: #ffe1e1;
+            color: #a00000;
+        }
+
+        .status-info {
+            background: #e3f0ff;
+            color: #0b3d91;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .button-area {
+            margin-top: 30px;
+
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+
+            padding: 13px 25px;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .pay-btn {
+            background: #0b3d91;
+            color: white;
+            min-width: 220px;
+        }
+
+        .pay-btn:hover {
+            background: #082d6b;
+        }
+
+        .pay-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            background: #e5e5e5;
+            color: #333;
+        }
+
+        .back-btn:hover {
+            background: #d2d2d2;
+        }
+
+        /* ================= LOADING ================= */
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+
+            color: #0b3d91;
+            font-size: 18px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ================= SUCCESS ================= */
+
+        .success-icon {
+            font-size: 55px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .success-message {
+            text-align: center;
+            color: #176b35;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .redirect-message {
+            text-align: center;
+            margin-top: 10px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* ================= ERROR ================= */
+
+        .error-box {
+            background: #fff0f0;
+            border: 1px solid #ffb5b5;
+            color: #a00000;
+
+            padding: 18px;
+            border-radius: 10px;
+
+            text-align: center;
+
+            margin-top: 20px;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            margin-top: 40px;
+
+            color: #777;
+            font-size: 14px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 600px) {
+
+            .navbar {
+                padding: 14px 18px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .nav-title {
+                font-size: 14px;
+            }
+
+            .container {
+                width: 94%;
+                margin-top: 25px;
+            }
+
+            .payment-card {
+                padding: 20px;
+            }
+
+            .page-title h1 {
+                font-size: 26px;
+            }
+
+            .payment-row {
+                gap: 15px;
+            }
+
+            .payment-label {
+                font-size: 14px;
+            }
+
+            .payment-value {
+                font-size: 16px;
+            }
+
+            .advance-value {
+                font-size: 21px;
+            }
+
+            .pay-btn {
+                width: 100%;
+            }
+
+            .back-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+            Autophile Yatra
+        </div>
+
+        <div class="nav-title">
+            Advance Payment
+        </div>
+
+    </nav>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="container">
+
+        <div class="page-title">
+
+            <h1>Advance Payment</h1>
+
+            <p>
+                Pay 25% advance after your booking is approved by admin.
+            </p>
+
+        </div>
+
+
+        <!-- ================= LOADING ================= -->
+
+        <div id="loadingBox" class="loading">
+
+            Loading booking payment details...
+
+        </div>
+
+
+        <!-- ================= PAYMENT CARD ================= -->
+
+        <div id="paymentCard" class="payment-card hidden">
+
+            <div class="booking-heading">
+
+                Booking ID:
+                <span id="bookingIdText">-</span>
+
+            </div>
+
+
+            <!-- TOTAL AMOUNT -->
+
+            <div class="payment-row">
+
+                <div class="payment-label">
+                    Total Trip Amount
+                </div>
+
+                <div class="payment-value">
+                    ₹<span id="totalAmount">0.00</span>
+                </div>
+
+            </div>
+
+
+            <!-- ADVANCE -->
+
+            <div class="payment-row">
+
+                <div class="payment-label">
+                    Advance Payment (25%)
+                </div>
+
+                <div class="payment-value advance-value">
+                    ₹<span id="advanceAmount">0.00</span>
+                </div>
+
+            </div>
+
+
+            <!-- REMAINING -->
+
+            <div class="payment-row">
+
+                <div class="payment-label">
+                    Remaining Amount (75%)
+                </div>
+
+                <div class="payment-value remaining-value">
+                    ₹<span id="remainingAmount">0.00</span>
+                </div>
+
+            </div>
+
+
+            <!-- PAYMENT STATUS -->
+
+            <div class="payment-row">
+
+                <div class="payment-label">
+                    Payment Status
+                </div>
+
+                <div class="payment-value">
+                    <span id="paymentStatus">-</span>
+                </div>
+
+            </div>
+
+
+            <!-- STATUS MESSAGE -->
+
+            <div id="statusBox" class="status-box status-info">
+
+                Checking payment status...
+
+            </div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="button-area">
+
+                <button
+                    id="payButton"
+                    class="pay-btn"
+                    onclick="startPayment()">
+
+                    Pay Advance ₹<span id="payButtonAmount">0.00</span>
+
+                </button>
+
+
+                <button
+                    class="back-btn"
+                    onclick="goBack()">
+
+                    Back to Dashboard
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= ERROR ================= -->
+
+        <div id="errorBox" class="error-box hidden">
+
+            <span id="errorMessage"></span>
+
+        </div>
+
+
+        <!-- ================= SUCCESS ================= -->
+
+        <div id="successBox" class="payment-card hidden">
+
+            <div class="success-icon">
+                ✅
+            </div>
+
+            <div class="success-message">
+
+                Advance Payment Successful!
+
+            </div>
+
+            <div class="redirect-message">
+
+                Your booking has been updated successfully.
+                Redirecting to My Bookings...
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        © 2026 Autophile Yatra. All Rights Reserved.
+
+    </footer>
+
+
+    <script>
+
+        /* =========================================================
+           GLOBAL VARIABLES
+        ========================================================= */
+
+        let bookingId = null;
+
+        let totalAmount = 0;
+
+        let advanceAmount = 0;
+
+        let remainingAmount = 0;
+
+        let paymentStatus = "";
+
+        let paymentLoaded = false;
+
+        let paymentInProgress = false;
+
+
+        /* =========================================================
+           GET BOOKING ID FROM URL
+        ========================================================= */
+
+        function getBookingIdFromUrl() {
+
+            const params = new URLSearchParams(window.location.search);
+
+            const id = params.get("bookingId");
+
+            if (!id) {
+                return null;
+            }
+
+            const parsedId = Number(id);
+
+            if (!Number.isInteger(parsedId) || parsedId <= 0) {
+                return null;
+            }
+
+            return parsedId;
+        }
+
+
+        /* =========================================================
+           PAGE LOAD
+        ========================================================= */
+
+        document.addEventListener("DOMContentLoaded", function () {
+
+            bookingId = getBookingIdFromUrl();
+
+            if (!bookingId) {
+
+                showError(
+                    "Booking ID is missing or invalid. Please open this page from My Bookings."
+                );
+
+                hideLoading();
+
+                return;
+            }
+
+
+            document.getElementById("bookingIdText").textContent =
+                bookingId;
+
+
+            loadPayment();
+
+        });
+
+
+        /* =========================================================
+           LOAD PAYMENT
+        ========================================================= */
+
+        async function loadPayment() {
+
+            try {
+
+                showLoading();
+
+                hideError();
+
+
+                const response = await fetch(
+                    `/api/payments/booking/${encodeURIComponent(bookingId)}`
+                );
+
+
+                if (response.ok) {
+
+                    const payment = await response.json();
+
+                    displayPayment(payment);
+
+                    return;
+                }
+
+
+                /*
+                 * If payment record does not exist,
+                 * create the advance payment record.
+                 */
+
+                if (response.status === 404) {
+
+                    await createAdvancePayment();
+
+                    return;
+                }
+
+
+                const errorText = await response.text();
+
+                throw new Error(
+                    errorText || "Unable to load payment details."
+                );
+
+            }
+            catch (error) {
+
+                console.error("Load payment error:", error);
+
+                showError(
+                    error.message ||
+                    "Unable to load payment details."
+                );
+
+            }
+            finally {
+
+                hideLoading();
+
+            }
+
+        }
+
+
+        /* =========================================================
+           CREATE ADVANCE PAYMENT RECORD
+        ========================================================= */
+
+        async function createAdvancePayment() {
+
+            try {
+
+                const response = await fetch(
+                    `/api/payments/advance/${encodeURIComponent(bookingId)}`,
+                    {
+                        method: "POST"
+                    }
+                );
+
+
+                const responseText = await response.text();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to create advance payment."
+                    );
+
+                }
+
+
+                let payment;
+
+                try {
+
+                    payment = JSON.parse(responseText);
+
+                }
+                catch (error) {
+
+                    throw new Error(
+                        "Invalid payment response from server."
+                    );
+
+                }
+
+
+                displayPayment(payment);
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Create advance payment error:",
+                    error
+                );
+
+                showError(
+                    error.message ||
+                    "Unable to create advance payment."
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           DISPLAY PAYMENT
+        ========================================================= */
+
+        function displayPayment(payment) {
+
+            if (!payment) {
+
+                showError(
+                    "Payment information was not received."
+                );
+
+                return;
+            }
+
+
+            totalAmount =
+                Number(payment.totalAmount || 0);
+
+
+            advanceAmount =
+                Number(payment.advanceAmount || 0);
+
+
+            remainingAmount =
+                Number(payment.remainingAmount || 0);
+
+
+            paymentStatus =
+                String(payment.paymentStatus || "PENDING")
+                    .toUpperCase();
+
+
+            document.getElementById("totalAmount")
+                .textContent = formatAmount(totalAmount);
+
+
+            document.getElementById("advanceAmount")
+                .textContent = formatAmount(advanceAmount);
+
+
+            document.getElementById("remainingAmount")
+                .textContent = formatAmount(remainingAmount);
+
+
+            document.getElementById("paymentStatus")
+                .textContent = paymentStatus;
+
+
+            document.getElementById("payButtonAmount")
+                .textContent = formatAmount(advanceAmount);
+
+
+            document.getElementById("paymentCard")
+                .classList.remove("hidden");
+
+
+            paymentLoaded = true;
+
+
+            updatePaymentStatus();
+
+        }
+
+
+        /* =========================================================
+           UPDATE PAYMENT STATUS UI
+        ========================================================= */
+
+        function updatePaymentStatus() {
+
+            const statusBox =
+                document.getElementById("statusBox");
+
+            const payButton =
+                document.getElementById("payButton");
+
+
+            statusBox.className =
+                "status-box";
+
+
+            if (paymentStatus === "SUCCESS") {
+
+                statusBox.classList.add("status-success");
+
+                statusBox.textContent =
+                    "Advance payment already completed.";
+
+                payButton.disabled = true;
+
+                payButton.textContent =
+                    "Advance Payment Completed";
+
+                return;
+            }
+
+
+            if (paymentStatus === "PENDING") {
+
+                statusBox.classList.add("status-pending");
+
+                statusBox.textContent =
+                    "Your booking is ready for advance payment.";
+
+                payButton.disabled = false;
+
+                return;
+            }
+
+
+            statusBox.classList.add("status-info");
+
+            statusBox.textContent =
+                "Payment status: " + paymentStatus;
+
+        }
+
+
+        /* =========================================================
+           START RAZORPAY PAYMENT
+        ========================================================= */
+
+        async function startPayment() {
+
+            if (paymentInProgress) {
+                return;
+            }
+
+
+            if (!paymentLoaded) {
+
+                showError(
+                    "Payment details are still loading."
+                );
+
+                return;
+            }
+
+
+            if (paymentStatus === "SUCCESS") {
+
+                showError(
+                    "Advance payment has already been completed."
+                );
+
+                return;
+            }
+
+
+            if (!advanceAmount || advanceAmount <= 0) {
+
+                showError(
+                    "Invalid advance payment amount."
+                );
+
+                return;
+            }
+
+
+            paymentInProgress = true;
+
+
+            const payButton =
+                document.getElementById("payButton");
+
+
+            payButton.disabled = true;
+
+            payButton.textContent =
+                "Opening Payment...";
+
+
+            hideError();
+
+
+            try {
+
+                /*
+                 * Create Razorpay order using the already
+                 * calculated advance amount.
+                 */
+
+                const orderResponse = await fetch(
+                    `/api/razorpay/create-order?amount=${encodeURIComponent(advanceAmount)}`,
+                    {
+                        method: "POST"
+                    }
+                );
+
+
+                const orderText =
+                    await orderResponse.text();
+
+
+                if (!orderResponse.ok) {
+
+                    throw new Error(
+                        orderText ||
+                        "Unable to create Razorpay order."
+                    );
+
+                }
+
+
+                let orderData;
+
+                try {
+
+                    orderData =
+                        JSON.parse(orderText);
+
+                }
+                catch (error) {
+
+                    throw new Error(
+                        "Invalid Razorpay order response."
+                    );
+
+                }
+
+
+                if (!orderData.orderId) {
+
+                    throw new Error(
+                        "Razorpay order ID was not received."
+                    );
+
+                }
+
+
+                if (!orderData.keyId) {
+
+                    throw new Error(
+                        "Razorpay key ID was not received."
+                    );
+
+                }
+
+
+                openRazorpayCheckout(orderData);
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Start payment error:",
+                    error
+                );
+
+
+                paymentInProgress = false;
+
+
+                payButton.disabled = false;
+
+                payButton.textContent =
+                    "Pay Advance ₹" +
+                    formatAmount(advanceAmount);
+
+
+                showError(
+                    error.message ||
+                    "Unable to start payment."
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           OPEN RAZORPAY CHECKOUT
+        ========================================================= */
+
+        function openRazorpayCheckout(orderData) {
+
+            const options = {
+
+                key: orderData.keyId,
+
+                amount: orderData.amount,
+
+                currency:
+                    orderData.currency || "INR",
+
+                name: "Autophile Yatra",
+
+                description:
+                    "Advance Payment - Booking #" +
+                    bookingId,
+
+                order_id:
+                    orderData.orderId,
+
+
+                handler: async function (response) {
+
+                    await verifyPayment(response);
+
+                },
+
+
+                prefill: {
+
+                    name: "",
+
+                    email: "",
+
+                    contact: ""
+
+                },
+
+
+                notes: {
+
+                    bookingId:
+                        String(bookingId),
+
+                    paymentType:
+                        "ADVANCE"
+
+                },
+
+
+                theme: {
+
+                    color: "#0b3d91"
+
+                },
+
+
+                modal: {
+
+                    ondismiss: function () {
+
+                        paymentInProgress = false;
+
+
+                        const payButton =
+                            document.getElementById(
+                                "payButton"
+                            );
+
+
+                        payButton.disabled = false;
+
+                        payButton.textContent =
+                            "Pay Advance ₹" +
+                            formatAmount(advanceAmount);
+
+
+                        setStatusMessage(
+                            "Payment window was closed. You can try again.",
+                            "info"
+                        );
+
+                    }
+
+                }
+
+            };
+
+
+            try {
+
+                const razorpay =
+                    new Razorpay(options);
+
+
+                razorpay.on(
+                    "payment.failed",
+                    function (response) {
+
+                        console.error(
+                            "Razorpay payment failed:",
+                            response
+                        );
+
+
+                        paymentInProgress = false;
+
+
+                        const payButton =
+                            document.getElementById(
+                                "payButton"
+                            );
+
+
+                        payButton.disabled = false;
+
+                        payButton.textContent =
+                            "Pay Advance ₹" +
+                            formatAmount(advanceAmount);
+
+
+                        let message =
+                            "Payment failed. Please try again.";
+
+
+                        if (
+                            response &&
+                            response.error &&
+                            response.error.description
+                        ) {
+
+                            message =
+                                response.error.description;
+
+                        }
+
+
+                        showError(message);
+
+                    }
+                );
+
+
+                razorpay.open();
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Razorpay open error:",
+                    error
+                );
+
+
+                paymentInProgress = false;
+
+
+                const payButton =
+                    document.getElementById(
+                        "payButton"
+                    );
+
+
+                payButton.disabled = false;
+
+                payButton.textContent =
+                    "Pay Advance ₹" +
+                    formatAmount(advanceAmount);
+
+
+                showError(
+                    "Unable to open Razorpay payment window."
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           VERIFY PAYMENT
+        ========================================================= */
+
+        async function verifyPayment(razorpayResponse) {
+
+            try {
+
+                setStatusMessage(
+                    "Verifying your payment...",
+                    "info"
+                );
+
+
+                const verifyData = {
+
+                    bookingId: bookingId,
+
+                    razorpayOrderId:
+                        razorpayResponse.razorpay_order_id,
+
+                    razorpayPaymentId:
+                        razorpayResponse.razorpay_payment_id,
+
+                    razorpaySignature:
+                        razorpayResponse.razorpay_signature
+
+                };
+
+
+                const response = await fetch(
+                    "/api/razorpay/verify",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(verifyData)
+                    }
+                );
+
+
+                const responseText =
+                    await response.text();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Payment verification failed."
+                    );
+
+                }
+
+
+                let result = null;
+
+
+                try {
+
+                    result =
+                        JSON.parse(responseText);
+
+                }
+                catch (error) {
+
+                    /*
+                     * Some backend responses may not be
+                     * JSON. Verification HTTP success is
+                     * still handled as success below.
+                     */
+
+                    console.log(
+                        "Verification response is not JSON."
+                    );
+
+                }
+
+
+                console.log(
+                    "Payment verification response:",
+                    result || responseText
+                );
+
+
+                paymentStatus = "SUCCESS";
+
+
+                paymentInProgress = false;
+
+
+                showPaymentSuccess();
+
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Payment verification error:",
+                    error
+                );
+
+
+                paymentInProgress = false;
+
+
+                const payButton =
+                    document.getElementById(
+                        "payButton"
+                    );
+
+
+                payButton.disabled = false;
+
+                payButton.textContent =
+                    "Pay Advance ₹" +
+                    formatAmount(advanceAmount);
+
+
+                showError(
+                    error.message ||
+                    "Payment verification failed. Please contact admin if money was deducted."
+                );
+
+            }
+
+        }
+
+
+        /* =========================================================
+           PAYMENT SUCCESS
+        ========================================================= */
+
+        function showPaymentSuccess() {
+
+            document.getElementById("paymentCard")
+                .classList.add("hidden");
+
+
+            document.getElementById("loadingBox")
+                .classList.add("hidden");
+
+
+            document.getElementById("errorBox")
+                .classList.add("hidden");
+
+
+            document.getElementById("successBox")
+                .classList.remove("hidden");
+
+
+            /*
+             * After successful payment, backend changes
+             * booking status to ADVANCE_PAID.
+             *
+             * Redirect user to My Bookings.
+             */
+
+            setTimeout(function () {
+
+                window.location.href =
+                    "/my-bookings.html";
+
+            }, 1800);
+
+        }
+
+
+        /* =========================================================
+           FORMAT AMOUNT
+        ========================================================= */
+
+        function formatAmount(amount) {
+
+            const number =
+                Number(amount || 0);
+
+
+            return number.toLocaleString(
+                "en-IN",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            );
+
+        }
+
+
+        /* =========================================================
+           STATUS MESSAGE
+        ========================================================= */
+
+        function setStatusMessage(message, type) {
+
+            const statusBox =
+                document.getElementById(
+                    "statusBox"
+                );
+
+
+            statusBox.className =
+                "status-box";
+
+
+            if (type === "success") {
+
+                statusBox.classList.add(
+                    "status-success"
+                );
+
+            }
+            else if (type === "error") {
+
+                statusBox.classList.add(
+                    "status-error"
+                );
+
+            }
+            else if (type === "pending") {
+
+                statusBox.classList.add(
+                    "status-pending"
+                );
+
+            }
+            else {
+
+                statusBox.classList.add(
+                    "status-info"
+                );
+
+            }
+
+
+            statusBox.textContent =
+                message;
+
+        }
+
+
+        /* =========================================================
+           SHOW LOADING
+        ========================================================= */
+
+        function showLoading() {
+
+            document.getElementById(
+                "loadingBox"
+            ).classList.remove("hidden");
+
+        }
+
+
+        /* =========================================================
+           HIDE LOADING
+        ========================================================= */
+
+        function hideLoading() {
+
+            document.getElementById(
+                "loadingBox"
+            ).classList.add("hidden");
+
+        }
+
+
+        /* =========================================================
+           SHOW ERROR
+        ========================================================= */
+
+        function showError(message) {
+
+            const errorBox =
+                document.getElementById(
+                    "errorBox"
+                );
+
+
+            const errorMessage =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+
+            errorMessage.textContent =
+                message;
+
+
+            errorBox.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =========================================================
+           HIDE ERROR
+        ========================================================= */
+
+        function hideError() {
+
+            document.getElementById(
+                "errorBox"
+            ).classList.add("hidden");
+
+        }
+
+
+        /* =========================================================
+           GO BACK
+        ========================================================= */
+
+        function goBack() {
+
+            window.location.href =
+                "/customer-dashboard.html";
+
+        }
+
+    </script>
+
+</body>
+</html>

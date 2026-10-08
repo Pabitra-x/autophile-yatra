@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Start Trip - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+        }
+
+        .navbar {
+            background: #0b3d91;
+            color: white;
+            padding: 18px 40px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 500px;
+            max-width: 90%;
+            margin: 60px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        h2 {
+            text-align: center;
+            color: #0b3d91;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 6px;
+            background: #198754;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #157347;
+        }
+
+        button:disabled {
+            background: #999;
+            cursor: not-allowed;
+        }
+
+        .back {
+            background: #555;
+        }
+
+        .back:hover {
+            background: #333;
+        }
+
+        .booking-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        #message {
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="navbar">
+
+    Autophile Yatra - Admin
+
+</div>
+
+
+<div class="container">
+
+    <h2>
+        Start Customer Trip
+    </h2>
+
+
+    <label>
+        Booking ID
+    </label>
+
+    <input
+        type="number"
+        id="bookingId"
+        placeholder="Enter Booking ID"
+        value="41">
+
+
+    <button
+        id="loadButton"
+        onclick="loadBooking()">
+
+        Load Booking
+
+    </button>
+
+
+    <div
+        id="bookingBox"
+        class="booking-box"
+        style="display:none;">
+
+        <div class="row">
+
+            <span>
+                Booking ID
+            </span>
+
+            <span id="showBookingId">
+                -
+            </span>
+
+        </div>
+
+
+        <div class="row">
+
+            <span>
+                Customer ID
+            </span>
+
+            <span id="customerId">
+                -
+            </span>
+
+        </div>
+
+
+        <div class="row">
+
+            <span>
+                Tour ID
+            </span>
+
+            <span id="tourId">
+                -
+            </span>
+
+        </div>
+
+
+        <div class="row">
+
+            <span>
+                Persons
+            </span>
+
+            <span id="persons">
+                -
+            </span>
+
+        </div>
+
+
+        <div class="row">
+
+            <span>
+                Total Amount
+            </span>
+
+            <span id="totalAmount">
+                -
+            </span>
+
+        </div>
+
+
+        <div class="row">
+
+            <span>
+                Travel Date
+            </span>
+
+            <span id="travelDate">
+                -
+            </span>
+
+        </div>
+
+
+        <div class="row">
+
+            <span>
+                Current Status
+            </span>
+
+            <span
+                id="bookingStatus"
+                class="status">
+
+                -
+
+            </span>
+
+        </div>
+
+
+        <button
+            id="startButton"
+            onclick="startTrip()">
+
+            Start Trip
+
+        </button>
+
+    </div>
+
+
+    <button
+        class="back"
+        onclick="goBack()">
+
+        Back to Admin Dashboard
+
+    </button>
+
+
+    <div id="message"></div>
+
+</div>
+
+
+<script>
+
+
+// =====================================================
+// LOAD BOOKING
+// =====================================================
+
+async function loadBooking() {
+
+    const bookingId =
+        document.getElementById(
+            "bookingId"
+        ).value;
+
+
+    if (!bookingId) {
+
+        showMessage(
+            "Please enter Booking ID.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/bookings/"
+                + bookingId
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Booking not found."
+            );
+
+        }
+
+
+        const booking =
+            await response.json();
+
+
+        document.getElementById(
+            "bookingBox"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "showBookingId"
+        ).innerText =
+            booking.bookingId;
+
+
+        document.getElementById(
+            "customerId"
+        ).innerText =
+            booking.customerId;
+
+
+        document.getElementById(
+            "tourId"
+        ).innerText =
+            booking.tourId;
+
+
+        document.getElementById(
+            "persons"
+        ).innerText =
+            booking.numberOfPersons;
+
+
+        document.getElementById(
+            "totalAmount"
+        ).innerText =
+            "₹" +
+            Number(
+                booking.totalAmount
+            ).toLocaleString("en-IN");
+
+
+        document.getElementById(
+            "travelDate"
+        ).innerText =
+            booking.travelDate;
+
+
+        document.getElementById(
+            "bookingStatus"
+        ).innerText =
+            booking.bookingStatus;
+
+
+        const startButton =
+            document.getElementById(
+                "startButton"
+            );
+
+
+        if (
+            booking.bookingStatus ===
+            "ADVANCE_PAID"
+        ) {
+
+            startButton.disabled =
+                false;
+
+            startButton.innerText =
+                "Start Trip";
+
+        }
+
+        else if (
+            booking.bookingStatus ===
+            "TRIP_STARTED"
+        ) {
+
+            startButton.disabled =
+                true;
+
+            startButton.innerText =
+                "Trip Already Started";
+
+
+            showMessage(
+                "This trip has already started.",
+                "success"
+            );
+
+        }
+
+        else {
+
+            startButton.disabled =
+                true;
+
+            startButton.innerText =
+                "Trip Cannot Start";
+
+
+            showMessage(
+                "Trip can start only after advance payment.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// START TRIP
+// =====================================================
+
+async function startTrip() {
+
+    const bookingId =
+        document.getElementById(
+            "bookingId"
+        ).value;
+
+
+    if (!bookingId) {
+
+        showMessage(
+            "Booking ID is required.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const button =
+        document.getElementById(
+            "startButton"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.innerText =
+        "Starting Trip...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/bookings/admin/start-trip/"
+                + bookingId,
+                {
+                    method: "PUT"
+                }
+            );
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                typeof result === "string"
+                ? result
+                : "Unable to start trip."
+            );
+
+        }
+
+
+        document.getElementById(
+            "bookingStatus"
+        ).innerText =
+            result.bookingStatus;
+
+
+        showMessage(
+            "Trip started successfully! Booking is now TRIP_STARTED.",
+            "success"
+        );
+
+
+        button.innerText =
+            "Trip Started";
+
+
+    }
+
+
+    catch (error) {
+
+        console.error(error);
+
+
+        showMessage(
+            error.message,
+            "error"
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.innerText =
+            "Start Trip";
+
+    }
+
+}
+
+
+// =====================================================
+// MESSAGE
+// =====================================================
+
+function showMessage(
+    message,
+    type
+) {
+
+    const box =
+        document.getElementById(
+            "message"
+        );
+
+
+    box.innerText =
+        message;
+
+
+    box.className =
+        type;
+
+}
+
+
+// =====================================================
+// BACK
+// =====================================================
+
+function goBack() {
+
+    window.location.href =
+        "/admin-dashboard.html";
+
+}
+
+
+// =====================================================
+// AUTO LOAD BOOKING 41
+// =====================================================
+
+loadBooking();
+
+</script>
+
+
+</body>
+
+</html>

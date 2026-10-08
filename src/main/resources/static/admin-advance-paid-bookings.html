@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <title>Advance Paid Bookings - Autophile Yatra</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f4f6f8;
+        }
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 35px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+        .container {
+            padding: 30px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        .info {
+            color: #555;
+            margin-bottom: 25px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: #1f2937;
+            color: white;
+            padding: 13px;
+        }
+
+        td {
+            padding: 13px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status {
+            color: #15803d;
+            font-weight: bold;
+        }
+
+        .assign-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 9px 14px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .assign-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            color: #2563eb;
+        }
+
+        #message {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+    Autophile Yatra - Admin
+</div>
+
+
+<div class="container">
+
+    <h2>Advance Paid Bookings</h2>
+
+    <div class="info">
+        These bookings have successfully paid the 25% advance.
+    </div>
+
+
+    <table>
+
+        <thead>
+
+        <tr>
+
+            <th>Booking ID</th>
+
+            <th>Customer ID</th>
+
+            <th>Tour ID</th>
+
+            <th>Travel Date</th>
+
+            <th>Persons</th>
+
+            <th>Total Amount</th>
+
+            <th>Status</th>
+
+            <th>Action</th>
+
+        </tr>
+
+        </thead>
+
+
+        <tbody id="bookingTable">
+
+        </tbody>
+
+    </table>
+
+
+    <div id="message"></div>
+
+
+    <a href="admin-dashboard.html" class="back">
+        ← Back to Admin Dashboard
+    </a>
+
+</div>
+
+
+<script>
+
+    function loadAdvancePaidBookings() {
+
+        fetch("/api/bookings/admin/advance-paid")
+
+        .then(function(response) {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to load bookings"
+                );
+
+            }
+
+            return response.json();
+
+        })
+
+        .then(function(bookings) {
+
+            const table =
+                document.getElementById("bookingTable");
+
+            table.innerHTML = "";
+
+
+            if (bookings.length === 0) {
+
+                table.innerHTML =
+                    "<tr>" +
+                    "<td colspan='8'>" +
+                    "No advance-paid bookings found." +
+                    "</td>" +
+                    "</tr>";
+
+                return;
+            }
+
+
+            bookings.forEach(function(booking) {
+
+                const row =
+                    document.createElement("tr");
+
+
+                row.innerHTML =
+
+                    "<td>" +
+                    booking.bookingId +
+                    "</td>" +
+
+                    "<td>" +
+                    booking.customerId +
+                    "</td>" +
+
+                    "<td>" +
+                    booking.tourId +
+                    "</td>" +
+
+                    "<td>" +
+                    booking.travelDate +
+                    "</td>" +
+
+                    "<td>" +
+                    booking.numberOfPersons +
+                    "</td>" +
+
+                    "<td>₹" +
+                    Number(
+                        booking.totalAmount
+                    ).toLocaleString("en-IN") +
+                    "</td>" +
+
+                    "<td class='status'>" +
+                    booking.bookingStatus +
+                    "</td>" +
+
+                    "<td>" +
+
+                    "<button class='assign-btn' " +
+                    "onclick='assignDriver(" +
+                    booking.bookingId +
+                    ")'>" +
+
+                    "Assign Driver" +
+
+                    "</button>" +
+
+                    "</td>";
+
+
+                table.appendChild(row);
+
+            });
+
+        })
+
+        .catch(function(error) {
+
+            document.getElementById(
+                "message"
+            ).innerText =
+                "Error: " + error.message;
+
+        });
+
+    }
+
+
+    function assignDriver(bookingId) {
+
+        window.location.href =
+            "admin-driver-assignment.html?bookingId="
+            + bookingId;
+
+    }
+
+
+    loadAdvancePaidBookings();
+
+</script>
+
+</body>
+
+</html>

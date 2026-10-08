@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Notifications - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+            color: #111827;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            min-width: 24px;
+            height: 24px;
+            padding: 2px 7px;
+            border-radius: 20px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .notification-badge.hidden {
+            display: none;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* ================= LAYOUT ================= */
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            padding: 20px 0;
+        }
+
+        .sidebar h3 {
+            color: #9ca3af;
+            padding: 10px 22px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            padding: 14px 22px;
+            color: #e5e7eb;
+            cursor: pointer;
+        }
+
+        .menu li:hover,
+        .menu li.active {
+            background: #374151;
+            color: white;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-header h2 {
+            margin: 0;
+        }
+
+        .unread-summary {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .unread-summary.hidden {
+            display: none;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .button-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .refresh-btn {
+            background: #111827;
+            color: white;
+        }
+
+        .dashboard-btn {
+            background: #6b7280;
+            color: white;
+        }
+
+        .read-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            display: none;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 900px;
+        }
+
+        th,
+        td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .unread {
+            font-weight: bold;
+            background: #fff7ed;
+        }
+
+        .read {
+            color: #6b7280;
+        }
+
+        .status-unread {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .status-read {
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                padding: 15px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🚗 Autophile Yatra
+        </div>
+
+        <div class="admin-info">
+
+            <span>
+                👨‍💼 Admin
+            </span>
+
+            <span
+                id="navbarNotificationBadge"
+                class="notification-badge hidden">
+                0
+            </span>
+
+            <button
+                class="logout-btn"
+                onclick="logout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- ================= LAYOUT ================= -->
+
+    <div class="layout">
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <h3>
+                Management
+            </h3>
+
+            <ul class="menu">
+
+                <li onclick="goTo('admin-dashboard.html')">
+                    📊 Dashboard
+                </li>
+
+                <li onclick="goTo('admin-customer-requests.html')">
+                    👥 Customer Requests
+                </li>
+
+                <li onclick="goTo('admin-customers.html')">
+                    👤 All Customers
+                </li>
+
+                <li onclick="goTo('admin-tours.html')">
+                    🗺️ Destinations & Tours
+                </li>
+
+                <li onclick="goTo('admin-bookings.html')">
+                    📋 Manage Bookings
+                </li>
+
+                <li onclick="goTo('admin-driver-assignment.html')">
+                    🚗 Driver & Vehicle
+                </li>
+
+                <li onclick="goTo('admin-drivers.html')">
+                    👨‍✈️ Manage Drivers
+                </li>
+
+                <li onclick="goTo('admin-tracking.html')">
+                    📍 Live Trip Tracking
+                </li>
+
+                <li onclick="goTo('admin-payments.html')">
+                    💳 Payments
+                </li>
+
+                <li class="active"
+                    onclick="goTo('admin-notifications.html')">
+                    🔔 Notifications
+                </li>
+
+                <li onclick="goTo('admin-reviews.html')">
+                    ⭐ Reviews & Feedback
+                </li>
+
+                <li onclick="goTo('admin-reports.html')">
+                    📈 Reports
+                </li>
+
+                <li onclick="goTo('admin-profile.html')">
+                    👨‍💼 Admin Profile
+                </li>
+
+            </ul>
+
+        </aside>
+
+        <!-- ================= CONTENT ================= -->
+
+        <main class="content">
+
+            <div class="page-title">
+
+                <h1>
+                    🔔 Notifications
+                </h1>
+
+                <p>
+                    View notifications received by the admin.
+                </p>
+
+            </div>
+
+            <!-- MESSAGE -->
+
+            <div
+                id="message"
+                class="message">
+            </div>
+
+            <!-- ================= NOTIFICATIONS ================= -->
+
+            <div class="section">
+
+                <div class="section-header">
+
+                    <h2>
+                        My Notifications
+                    </h2>
+
+                    <div
+                        id="unreadSummary"
+                        class="unread-summary hidden">
+
+                        0 unread
+
+                    </div>
+
+                </div>
+
+                <div class="button-row">
+
+                    <button
+                        class="refresh-btn"
+                        onclick="loadNotifications()">
+
+                        🔄 Refresh
+
+                    </button>
+
+                    <button
+                        class="dashboard-btn"
+                        onclick="goTo('admin-dashboard.html')">
+
+                        ← Dashboard
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <!-- ================= NOTIFICATION LIST ================= -->
+
+            <div class="section">
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Booking ID
+                                </th>
+
+                                <th>
+                                    Title
+                                </th>
+
+                                <th>
+                                    Message
+                                </th>
+
+                                <th>
+                                    Type
+                                </th>
+
+                                <th>
+                                    Status
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody
+                            id="notificationTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="loading">
+
+                                    Loading notifications...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+        // =====================================================
+        // ADMIN LOGIN CHECK
+        // =====================================================
+
+        const adminId =
+            sessionStorage.getItem("adminId");
+
+        if (!adminId) {
+
+            alert("Admin login required.");
+
+            window.location.href =
+                "admin-login.html";
+        }
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
+
+        function goTo(page) {
+
+            window.location.href = page;
+
+        }
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        function logout() {
+
+            sessionStorage.clear();
+
+            window.location.href =
+                "admin-login.html";
+
+        }
+
+        // =====================================================
+        // SHOW MESSAGE
+        // =====================================================
+
+        function showMessage(text, type) {
+
+            const message =
+                document.getElementById("message");
+
+            message.innerText = text;
+
+            message.className =
+                "message " + type;
+
+            message.style.display =
+                "block";
+
+            setTimeout(function () {
+
+                message.style.display =
+                    "none";
+
+            }, 3000);
+        }
+
+        // =====================================================
+        // LOAD ADMIN NOTIFICATIONS
+        // =====================================================
+
+        async function loadNotifications() {
+
+            const tbody =
+                document.getElementById(
+                    "notificationTableBody"
+                );
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="loading">
+                        Loading notifications...
+                    </td>
+                </tr>
+            `;
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/notifications/admin/"
+                        + encodeURIComponent(adminId)
+                    );
+
+                const responseText =
+                    await response.text();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to load notifications."
+                    );
+                }
+
+                const notifications =
+                    JSON.parse(responseText);
+
+                renderNotifications(
+                    notifications
+                );
+
+                loadUnreadCount();
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Notification error:",
+                    error
+                );
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty">
+                            Unable to load notifications.
+                        </td>
+                    </tr>
+                `;
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+        // =====================================================
+        // LOAD UNREAD COUNT
+        // =====================================================
+
+        async function loadUnreadCount() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/notifications/admin/"
+                        + encodeURIComponent(adminId)
+                        + "/unread-count"
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load unread count."
+                    );
+                }
+
+                const count =
+                    await response.json();
+
+                updateUnreadCount(
+                    Number(count) || 0
+                );
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Unread count error:",
+                    error
+                );
+            }
+        }
+
+        // =====================================================
+        // UPDATE UNREAD COUNT
+        // =====================================================
+
+        function updateUnreadCount(count) {
+
+            const badge =
+                document.getElementById(
+                    "navbarNotificationBadge"
+                );
+
+            const summary =
+                document.getElementById(
+                    "unreadSummary"
+                );
+
+            if (count > 0) {
+
+                badge.innerText = count;
+
+                badge.classList.remove(
+                    "hidden"
+                );
+
+                summary.innerText =
+                    count + " unread";
+
+                summary.classList.remove(
+                    "hidden"
+                );
+
+            }
+            else {
+
+                badge.innerText = "0";
+
+                badge.classList.add(
+                    "hidden"
+                );
+
+                summary.classList.add(
+                    "hidden"
+                );
+            }
+        }
+
+        // =====================================================
+        // RENDER NOTIFICATIONS
+        // =====================================================
+
+        function renderNotifications(
+            notifications
+        ) {
+
+            const tbody =
+                document.getElementById(
+                    "notificationTableBody"
+                );
+
+            tbody.innerHTML = "";
+
+            if (
+                !Array.isArray(notifications) ||
+                notifications.length === 0
+            ) {
+
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty">
+                            No notifications found.
+                        </td>
+                    </tr>
+                `;
+
+                updateUnreadCount(0);
+
+                return;
+            }
+
+            let unreadCount = 0;
+
+            notifications.forEach(
+                function(notification) {
+
+                    const row =
+                        document.createElement("tr");
+
+                    const isRead =
+                        notification.readStatus === true;
+
+                    if (isRead) {
+
+                        row.className =
+                            "read";
+
+                    }
+                    else {
+
+                        row.className =
+                            "unread";
+
+                        unreadCount++;
+                    }
+
+                    let actionHtml = "";
+
+                    if (!isRead) {
+
+                        actionHtml += `
+                            <button
+                                class="read-btn"
+                                onclick="markAsRead(
+                                    ${notification.notificationId}
+                                )">
+
+                                ✓ Read
+
+                            </button>
+                        `;
+                    }
+
+                    actionHtml += `
+                        <button
+                            class="delete-btn"
+                            onclick="deleteNotification(
+                                ${notification.notificationId}
+                            )">
+
+                            Delete
+
+                        </button>
+                    `;
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${escapeHtml(
+                                notification.notificationId
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                notification.bookingId || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                notification.title || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                notification.message || "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                notification.notificationType || "-"
+                            )}
+                        </td>
+
+                        <td>
+
+                            ${
+                                isRead
+                                ? '<span class="status-read">✓ Read</span>'
+                                : '<span class="status-unread">● Unread</span>'
+                            }
+
+                        </td>
+
+                        <td>
+                            ${actionHtml}
+                        </td>
+                    `;
+
+                    tbody.appendChild(row);
+
+                }
+            );
+
+            updateUnreadCount(
+                unreadCount
+            );
+        }
+
+        // =====================================================
+        // MARK AS READ
+        // =====================================================
+
+        async function markAsRead(
+            notificationId
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/notifications/read/"
+                        + encodeURIComponent(
+                            notificationId
+                        ),
+                        {
+                            method: "PUT"
+                        }
+                    );
+
+                const responseText =
+                    await response.text();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to mark notification as read."
+                    );
+                }
+
+                showMessage(
+                    "Notification marked as read.",
+                    "success"
+                );
+
+                await loadNotifications();
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+        // =====================================================
+        // DELETE NOTIFICATION
+        // =====================================================
+
+        async function deleteNotification(
+            notificationId
+        ) {
+
+            const confirmed =
+                confirm(
+                    "Are you sure you want to delete this notification?"
+                );
+
+            if (!confirmed) {
+
+                return;
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/notifications/"
+                        + encodeURIComponent(
+                            notificationId
+                        ),
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+                const responseText =
+                    await response.text();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        responseText ||
+                        "Unable to delete notification."
+                    );
+                }
+
+                showMessage(
+                    "Notification deleted successfully.",
+                    "success"
+                );
+
+                await loadNotifications();
+
+            }
+            catch (error) {
+
+                console.error(error);
+
+                showMessage(
+                    error.message,
+                    "error"
+                );
+            }
+        }
+
+        // =====================================================
+        // HTML ESCAPE
+        // =====================================================
+
+        function escapeHtml(value) {
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+
+                return "";
+            }
+
+            return String(value)
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+        }
+
+        // =====================================================
+        // INITIAL LOAD
+        // =====================================================
+
+        loadNotifications();
+
+        // =====================================================
+        // REFRESH UNREAD COUNT
+        // =====================================================
+
+        setInterval(
+            loadUnreadCount,
+            10000
+        );
+
+    </script>
+
+</body>
+
+</html>

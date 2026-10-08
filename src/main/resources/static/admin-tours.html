@@ -1,0 +1,1583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Destinations & Tours - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f6f9;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+            background: #111827;
+            color: white;
+            padding: 18px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .admin-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* ================= LAYOUT ================= */
+
+        .layout {
+            display: flex;
+            min-height: calc(100vh - 70px);
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            width: 250px;
+            background: #1f2937;
+            padding: 20px 0;
+        }
+
+        .sidebar h3 {
+            color: #9ca3af;
+            padding: 10px 22px;
+            font-size: 13px;
+            text-transform: uppercase;
+        }
+
+        .menu {
+            list-style: none;
+        }
+
+        .menu li {
+            padding: 14px 22px;
+            color: #e5e7eb;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu li:hover,
+        .menu li.active {
+            background: #374151;
+            color: white;
+        }
+
+        /* ================= CONTENT ================= */
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        .page-title {
+            margin-bottom: 25px;
+        }
+
+        .page-title h1 {
+            color: #111827;
+            margin-bottom: 8px;
+        }
+
+        .page-title p {
+            color: #6b7280;
+        }
+
+        /* ================= SECTION ================= */
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            color: #111827;
+        }
+
+        /* ================= BUTTONS ================= */
+
+        .refresh-btn,
+        .add-btn {
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .refresh-btn {
+            background: #2563eb;
+        }
+
+        .refresh-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .add-btn {
+            background: #16a34a;
+        }
+
+        .add-btn:hover {
+            background: #15803d;
+        }
+
+        .edit-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 11px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 7px 11px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* ================= FORM ================= */
+
+        .form-container {
+            display: none;
+            margin-bottom: 25px;
+            border: 1px solid #e5e7eb;
+            padding: 20px;
+            border-radius: 10px;
+            background: #f9fafb;
+        }
+
+        .form-container.show {
+            display: block;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(200px, 1fr));
+
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #374151;
+        }
+
+        .form-group input {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #2563eb;
+        }
+
+        .form-actions {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .save-btn {
+            background: #16a34a;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .cancel-btn {
+            background: #6b7280;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* ================= MESSAGE ================= */
+
+        .message {
+            text-align: center;
+            padding: 30px;
+            color: #6b7280;
+        }
+
+        .success-message {
+            display: none;
+            background: #dcfce7;
+            color: #166534;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .error-message {
+            display: none;
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            background: #111827;
+            color: white;
+            padding: 14px;
+            text-align: left;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e5e7eb;
+            color: #374151;
+        }
+
+        tr:hover {
+            background: #f9fafb;
+        }
+
+        .tour-image {
+            width: 90px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 6px;
+            background: #e5e7eb;
+        }
+
+        .no-image {
+            width: 90px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #e5e7eb;
+            color: #6b7280;
+            border-radius: 6px;
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .admin-info span {
+                display: none;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= NAVBAR ================= -->
+
+    <div class="navbar">
+
+        <div class="logo">
+            🚗 Autophile Yatra
+        </div>
+
+        <div class="admin-info">
+
+            <span>
+                👨‍💼 Admin
+            </span>
+
+            <button class="logout-btn"
+                    onclick="logout()">
+
+                Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= LAYOUT ================= -->
+
+    <div class="layout">
+
+
+        <!-- ================= SIDEBAR ================= -->
+
+        <aside class="sidebar">
+
+            <h3>
+                Management
+            </h3>
+
+            <ul class="menu">
+
+                <li onclick="goTo('admin-dashboard.html')">
+                    📊 Dashboard
+                </li>
+
+                <li onclick="goTo('admin-customer-requests.html')">
+                    👥 Customer Requests
+                </li>
+
+                <li onclick="goTo('admin-customers.html')">
+                    👤 All Customers
+                </li>
+
+                <li class="active">
+                    🗺️ Destinations & Tours
+                </li>
+
+                <li onclick="goTo('admin-bookings.html')">
+                    📋 Manage Bookings
+                </li>
+
+                <li onclick="goTo('admin-driver-assignment.html')">
+                    🚗 Driver & Vehicle
+                </li>
+
+                <li onclick="goTo('admin-tracking.html')">
+                    📍 Live Tracking
+                </li>
+
+                <li onclick="goTo('admin-payments.html')">
+                    💳 Payments
+                </li>
+
+                <li onclick="goTo('admin-notifications.html')">
+                    🔔 Notifications
+                </li>
+
+                <li onclick="goTo('admin-reviews.html')">
+                    ⭐ Reviews & Feedback
+                </li>
+
+                <li onclick="goTo('admin-reports.html')">
+                    📈 Reports
+                </li>
+
+                <li onclick="goTo('admin-profile.html')">
+                    👨‍💼 Admin Profile
+                </li>
+
+            </ul>
+
+        </aside>
+
+
+        <!-- ================= CONTENT ================= -->
+
+        <main class="content">
+
+
+            <div class="page-title">
+
+                <h1>
+                    Destinations & Tours
+                </h1>
+
+                <p>
+                    Manage destinations and tour packages.
+                </p>
+
+            </div>
+
+
+            <!-- ================= MESSAGES ================= -->
+
+            <div id="successMessage"
+                 class="success-message">
+            </div>
+
+            <div id="errorMessage"
+                 class="error-message">
+            </div>
+
+
+            <!-- ================= ADD / EDIT FORM ================= -->
+
+            <div id="formContainer"
+                 class="form-container">
+
+                <h2 id="formTitle">
+                    Add New Tour
+                </h2>
+
+
+                <br>
+
+
+                <div class="form-grid">
+
+
+                    <!-- TOUR NAME -->
+
+                    <div class="form-group">
+
+                        <label for="tourName">
+                            Tour / Destination Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="tourName"
+                            placeholder="Example: Goa"
+                            required>
+
+                    </div>
+
+
+                    <!-- DURATION -->
+
+                    <div class="form-group">
+
+                        <label for="durationDays">
+                            Duration (Days)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="durationDays"
+                            min="1"
+                            placeholder="Example: 5"
+                            required>
+
+                    </div>
+
+
+                    <!-- TOTAL AMOUNT -->
+
+                    <div class="form-group">
+
+                        <label for="totalAmount">
+                            Total Amount (₹)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="totalAmount"
+                            min="0"
+                            step="0.01"
+                            placeholder="Example: 15000"
+                            required>
+
+                    </div>
+
+
+                    <!-- AVAILABLE SLOTS -->
+
+                    <div class="form-group">
+
+                        <label for="availableSlots">
+                            Available Slots
+                        </label>
+
+                        <input
+                            type="number"
+                            id="availableSlots"
+                            min="0"
+                            placeholder="Example: 20"
+                            required>
+
+                    </div>
+
+
+                    <!-- IMAGE URL -->
+
+                    <div class="form-group"
+                         style="grid-column: 1 / -1;">
+
+                        <label for="imageUrl">
+                            Image URL
+                        </label>
+
+                        <input
+                            type="url"
+                            id="imageUrl"
+                            placeholder="https://example.com/goa.jpg">
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button class="save-btn"
+                            onclick="saveTour()">
+
+                        💾 Save Tour
+
+                    </button>
+
+                    <button class="cancel-btn"
+                            onclick="cancelForm()">
+
+                        Cancel
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= TOUR LIST ================= -->
+
+            <div class="section">
+
+
+                <div class="section-header">
+
+                    <h2>
+                        Tour Packages
+                    </h2>
+
+
+                    <div>
+
+                        <button class="add-btn"
+                                onclick="showAddForm()">
+
+                            ➕ Add Tour
+
+                        </button>
+
+
+                        <button class="refresh-btn"
+                                onclick="loadTours()">
+
+                            🔄 Refresh
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>
+                                    ID
+                                </th>
+
+                                <th>
+                                    Image
+                                </th>
+
+                                <th>
+                                    Tour Name
+                                </th>
+
+                                <th>
+                                    Duration
+                                </th>
+
+                                <th>
+                                    Amount
+                                </th>
+
+                                <th>
+                                    Available Slots
+                                </th>
+
+                                <th>
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tourTableBody">
+
+                            <tr>
+
+                                <td colspan="7"
+                                    class="message">
+
+                                    Loading tours...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+        </main>
+
+    </div>
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        // =====================================================
+        // ADMIN LOGIN CHECK
+        // =====================================================
+
+        const adminId =
+            sessionStorage.getItem("adminId");
+
+
+        if (!adminId) {
+
+            alert("Admin login required.");
+
+            window.location.href =
+                "admin-login.html";
+
+        }
+
+
+        // =====================================================
+        // EDITING TOUR ID
+        // =====================================================
+
+        let editingTourId = null;
+
+
+        // =====================================================
+        // NAVIGATION
+        // =====================================================
+
+        function goTo(page) {
+
+            window.location.href = page;
+
+        }
+
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        function logout() {
+
+            sessionStorage.clear();
+
+            window.location.href =
+                "admin-login.html";
+
+        }
+
+
+        // =====================================================
+        // SHOW SUCCESS
+        // =====================================================
+
+        function showSuccess(message) {
+
+            const box =
+                document.getElementById(
+                    "successMessage"
+                );
+
+            box.textContent = message;
+
+            box.style.display = "block";
+
+
+            setTimeout(function () {
+
+                box.style.display = "none";
+
+            }, 3000);
+
+        }
+
+
+        // =====================================================
+        // SHOW ERROR
+        // =====================================================
+
+        function showError(message) {
+
+            const box =
+                document.getElementById(
+                    "errorMessage"
+                );
+
+            box.textContent = message;
+
+            box.style.display = "block";
+
+
+            setTimeout(function () {
+
+                box.style.display = "none";
+
+            }, 4000);
+
+        }
+
+
+        // =====================================================
+        // SHOW ADD FORM
+        // =====================================================
+
+        function showAddForm() {
+
+            editingTourId = null;
+
+
+            document.getElementById(
+                "formTitle"
+            ).textContent =
+                "Add New Tour";
+
+
+            clearForm();
+
+
+            document.getElementById(
+                "formContainer"
+            ).classList.add("show");
+
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        // =====================================================
+        // CLEAR FORM
+        // =====================================================
+
+        function clearForm() {
+
+            document.getElementById(
+                "tourName"
+            ).value = "";
+
+
+            document.getElementById(
+                "durationDays"
+            ).value = "";
+
+
+            document.getElementById(
+                "totalAmount"
+            ).value = "";
+
+
+            document.getElementById(
+                "availableSlots"
+            ).value = "";
+
+
+            document.getElementById(
+                "imageUrl"
+            ).value = "";
+
+        }
+
+
+        // =====================================================
+        // CANCEL FORM
+        // =====================================================
+
+        function cancelForm() {
+
+            editingTourId = null;
+
+            clearForm();
+
+            document.getElementById(
+                "formContainer"
+            ).classList.remove("show");
+
+        }
+
+
+        // =====================================================
+        // LOAD TOURS
+        // =====================================================
+
+        async function loadTours() {
+
+            const tableBody =
+                document.getElementById(
+                    "tourTableBody"
+                );
+
+
+            /*
+             * Do NOT replace the whole page.
+             * This prevents the blinking problem.
+             */
+
+            if (!tableBody.children.length) {
+
+                tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="message">
+
+                            Loading tours...
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+
+            try {
+
+                const response =
+                    await fetch("/api/tours");
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load tours."
+                    );
+
+                }
+
+
+                const tours =
+                    await response.json();
+
+
+                if (!tours ||
+                    tours.length === 0) {
+
+                    tableBody.innerHTML = `
+
+                        <tr>
+
+                            <td colspan="7"
+                                class="message">
+
+                                No tours found.
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                /*
+                 * Build the table first.
+                 * Then update the DOM once.
+                 * This reduces visual blinking.
+                 */
+
+                let html = "";
+
+
+                tours.forEach(function(tour) {
+
+
+                    const tourId =
+                        tour.tourId ?? "-";
+
+
+                    const name =
+                        tour.name || "Unnamed Tour";
+
+
+                    const duration =
+                        tour.durationDays ?? 0;
+
+
+                    const amount =
+                        Number(
+                            tour.totalAmount || 0
+                        );
+
+
+                    const slots =
+                        tour.availableSlots ?? 0;
+
+
+                    let imageHTML =
+                        `<div class="no-image">
+                            No Image
+                         </div>`;
+
+
+                    if (tour.imageUrl) {
+
+                        imageHTML = `
+
+                            <img
+                                class="tour-image"
+                                src="${escapeHtml(
+                                    tour.imageUrl
+                                )}"
+                                alt="${escapeHtml(
+                                    name
+                                )}"
+                                onerror="this.outerHTML='<div class=\\'no-image\\'>Image Error</div>'"
+                            >
+
+                        `;
+
+                    }
+
+
+                    html += `
+
+                        <tr>
+
+                            <td>
+                                ${tourId}
+                            </td>
+
+                            <td>
+                                ${imageHTML}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    ${escapeHtml(name)}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ${duration} day(s)
+                            </td>
+
+                            <td>
+                                ₹${amount.toFixed(2)}
+                            </td>
+
+                            <td>
+                                ${slots}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="edit-btn"
+                                    onclick="editTour(${tourId})">
+
+                                    ✏️ Edit
+
+                                </button>
+
+                                <button
+                                    class="delete-btn"
+                                    onclick="deleteTour(${tourId})">
+
+                                    🗑️ Delete
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+
+                tableBody.innerHTML = html;
+
+
+            } catch (error) {
+
+                console.error(
+                    "Tour loading error:",
+                    error
+                );
+
+
+                tableBody.innerHTML = `
+
+                    <tr>
+
+                        <td colspan="7"
+                            class="message"
+                            style="color:red;">
+
+                            Unable to load tours.
+
+                            <br><br>
+
+                            ${escapeHtml(
+                                error.message
+                            )}
+
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+
+        }
+
+
+        // =====================================================
+        // ESCAPE HTML
+        // =====================================================
+
+        function escapeHtml(value) {
+
+            if (value === null ||
+                value === undefined) {
+
+                return "";
+
+            }
+
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+
+        // =====================================================
+        // EDIT TOUR
+        // =====================================================
+
+        async function editTour(tourId) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/tours/" + tourId
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load tour details."
+                    );
+
+                }
+
+
+                const tour =
+                    await response.json();
+
+
+                editingTourId =
+                    tour.tourId;
+
+
+                document.getElementById(
+                    "formTitle"
+                ).textContent =
+                    "Edit Tour";
+
+
+                document.getElementById(
+                    "tourName"
+                ).value =
+                    tour.name || "";
+
+
+                document.getElementById(
+                    "durationDays"
+                ).value =
+                    tour.durationDays || "";
+
+
+                document.getElementById(
+                    "totalAmount"
+                ).value =
+                    tour.totalAmount || "";
+
+
+                document.getElementById(
+                    "availableSlots"
+                ).value =
+                    tour.availableSlots ?? "";
+
+
+                document.getElementById(
+                    "imageUrl"
+                ).value =
+                    tour.imageUrl || "";
+
+
+                document.getElementById(
+                    "formContainer"
+                ).classList.add("show");
+
+
+                window.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+
+
+            } catch (error) {
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // SAVE TOUR
+        // =====================================================
+
+        async function saveTour() {
+
+
+            const name =
+                document.getElementById(
+                    "tourName"
+                ).value.trim();
+
+
+            const durationDays =
+                Number(
+                    document.getElementById(
+                        "durationDays"
+                    ).value
+                );
+
+
+            const totalAmount =
+                Number(
+                    document.getElementById(
+                        "totalAmount"
+                    ).value
+                );
+
+
+            const availableSlots =
+                Number(
+                    document.getElementById(
+                        "availableSlots"
+                    ).value
+                );
+
+
+            const imageUrl =
+                document.getElementById(
+                    "imageUrl"
+                ).value.trim();
+
+
+            // =================================================
+            // VALIDATION
+            // =================================================
+
+            if (!name) {
+
+                showError(
+                    "Please enter tour name."
+                );
+
+                return;
+
+            }
+
+
+            if (!durationDays ||
+                durationDays < 1) {
+
+                showError(
+                    "Duration must be at least 1 day."
+                );
+
+                return;
+
+            }
+
+
+            if (totalAmount < 0 ||
+                Number.isNaN(totalAmount)) {
+
+                showError(
+                    "Please enter a valid amount."
+                );
+
+                return;
+
+            }
+
+
+            if (availableSlots < 0 ||
+                Number.isNaN(availableSlots)) {
+
+                showError(
+                    "Please enter valid available slots."
+                );
+
+                return;
+
+            }
+
+
+            const tourData = {
+
+                name: name,
+
+                durationDays: durationDays,
+
+                totalAmount: totalAmount,
+
+                availableSlots: availableSlots,
+
+                imageUrl: imageUrl || null
+
+            };
+
+
+            try {
+
+
+                let response;
+
+
+                // =================================================
+                // ADD
+                // =================================================
+
+                if (editingTourId === null) {
+
+                    response =
+                        await fetch(
+                            "/api/tours",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        tourData
+                                    )
+                            }
+                        );
+
+                }
+
+                // =================================================
+                // UPDATE
+                // =================================================
+
+                else {
+
+                    response =
+                        await fetch(
+                            "/api/tours/"
+                            + editingTourId,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        tourData
+                                    )
+                            }
+                        );
+
+                }
+
+
+                if (!response.ok) {
+
+                    let errorText =
+                        "Unable to save tour.";
+
+                    try {
+
+                        const text =
+                            await response.text();
+
+                        if (text) {
+                            errorText = text;
+                        }
+
+                    } catch (e) {
+                        // Ignore
+                    }
+
+
+                    throw new Error(
+                        errorText
+                    );
+
+                }
+
+
+                if (editingTourId === null) {
+
+                    showSuccess(
+                        "Tour added successfully."
+                    );
+
+                } else {
+
+                    showSuccess(
+                        "Tour updated successfully."
+                    );
+
+                }
+
+
+                cancelForm();
+
+                await loadTours();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Save tour error:",
+                    error
+                );
+
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // DELETE TOUR
+        // =====================================================
+
+        async function deleteTour(tourId) {
+
+
+            const confirmation =
+                confirm(
+                    "Are you sure you want to delete Tour ID "
+                    + tourId
+                    + "?"
+                );
+
+
+            if (!confirmation) {
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/tours/"
+                        + tourId,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    let errorText =
+                        "Unable to delete tour.";
+
+                    try {
+
+                        const text =
+                            await response.text();
+
+                        if (text) {
+                            errorText = text;
+                        }
+
+                    } catch (e) {
+                        // Ignore
+                    }
+
+
+                    throw new Error(
+                        errorText
+                    );
+
+                }
+
+
+                showSuccess(
+                    "Tour deleted successfully."
+                );
+
+
+                await loadTours();
+
+
+            } catch (error) {
+
+                console.error(
+                    "Delete tour error:",
+                    error
+                );
+
+
+                showError(
+                    error.message
+                );
+
+            }
+
+        }
+
+
+        // =====================================================
+        // INITIAL LOAD
+        // =====================================================
+
+        loadTours();
+
+
+    </script>
+
+
+</body>
+
+</html>

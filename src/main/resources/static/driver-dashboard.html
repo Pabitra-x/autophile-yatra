@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Driver Dashboard - Autophile Yatra</title>
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .navbar {
+            background: #0b3d62;
+            color: white;
+            padding: 16px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar button {
+            background: #e53935;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .welcome {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+
+        .welcome h1 {
+            color: #0b3d62;
+            margin-bottom: 10px;
+        }
+
+        .driver-info {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #f1f6fa;
+            padding: 12px 18px;
+            border-radius: 8px;
+        }
+
+        .info-box strong {
+            color: #0b3d62;
+        }
+
+        .section-title {
+            margin-bottom: 15px;
+            color: #0b3d62;
+        }
+
+        .assignment-card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .assignment-card h3 {
+            color: #0b3d62;
+            margin-bottom: 15px;
+        }
+
+        .assignment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .detail {
+            background: #f7f9fb;
+            padding: 12px;
+            border-radius: 7px;
+        }
+
+        .detail span {
+            display: block;
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .detail strong {
+            color: #222;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .buttons button {
+            border: none;
+            padding: 11px 16px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .start-btn {
+            background: #198754;
+            color: white;
+        }
+
+        .stop-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .send-btn {
+            background: #0d6efd;
+            color: white;
+        }
+
+        .refresh-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.88;
+        }
+
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            background: #eef5ff;
+            color: #0b3d62;
+            font-weight: bold;
+        }
+
+        #map {
+            width: 100%;
+            height: 450px;
+            border-radius: 12px;
+            margin-top: 25px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .location-info {
+            background: white;
+            padding: 18px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .location-info p {
+            margin: 7px 0;
+        }
+
+        .message {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 14px;
+            }
+
+            .logo {
+                font-size: 19px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+            #map {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="logo">Autophile Yatra - Driver</div>
+
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container">
+
+        <!-- Welcome -->
+        <div class="welcome">
+            <h1>Welcome, <span id="driverName">Driver</span> 👋</h1>
+
+            <p>
+                Manage your assigned trip and share your live location
+                with the customer.
+            </p>
+
+            <div class="driver-info">
+
+                <div class="info-box">
+                    <strong>Driver ID:</strong>
+                    <span id="driverIdText">-</span>
+                </div>
+
+                <div class="info-box">
+                    <strong>Mobile:</strong>
+                    <span id="driverMobile">-</span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Assignment -->
+        <h2 class="section-title">My Assigned Trips</h2>
+
+        <div style="margin-bottom:20px;">
+            <button
+                class="refresh-btn"
+                onclick="loadAssignments()">
+                🔄 Refresh Assignments
+            </button>
+        </div>
+
+        <div id="assignmentsContainer">
+            <div class="loading">
+                Loading assignments...
+            </div>
+        </div>
+
+        <!-- Map -->
+        <h2 class="section-title" style="margin-top:30px;">
+            Live GPS Location
+        </h2>
+
+        <div id="map"></div>
+
+        <!-- Location Information -->
+        <div class="location-info">
+
+            <p>
+                <strong>Booking ID:</strong>
+                <span id="selectedBooking">Not selected</span>
+            </p>
+
+            <p>
+                <strong>Vehicle:</strong>
+                <span id="selectedVehicle">Not selected</span>
+            </p>
+
+            <p>
+                <strong>Latitude:</strong>
+                <span id="latitude">-</span>
+            </p>
+
+            <p>
+                <strong>Longitude:</strong>
+                <span id="longitude">-</span>
+            </p>
+
+            <p>
+                <strong>Accuracy:</strong>
+                <span id="accuracy">-</span>
+            </p>
+
+            <p>
+                <strong>Last Sent:</strong>
+                <span id="lastSent">-</span>
+            </p>
+
+            <div class="status" id="status">
+                Select an assigned trip to start GPS tracking.
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Leaflet JS -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+    <script>
+
+        // -----------------------------------------
+        // Check Driver Login
+        // -----------------------------------------
+
+        const driverId = sessionStorage.getItem("driverId");
+
+        if (!driverId) {
+            window.location.href = "/driver-login.html";
+        }
+
+
+        // -----------------------------------------
+        // Global Variables
+        // -----------------------------------------
+
+        let assignments = [];
+
+        let selectedAssignment = null;
+
+        let trackingInterval = null;
+
+        let currentMarker = null;
+
+        let accuracyCircle = null;
+
+
+        // -----------------------------------------
+        // Leaflet Map
+        // -----------------------------------------
+
+        const map = L.map("map").setView(
+            [20.5937, 78.9629],
+            5
+        );
+
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(map);
+
+
+        // -----------------------------------------
+        // Load Driver Details
+        // -----------------------------------------
+
+        async function loadDriver() {
+
+            try {
+
+                const response = await fetch(
+                    "/api/drivers/" + driverId
+                );
+
+                if (!response.ok) {
+                    throw new Error("Driver details not found");
+                }
+
+                const driver = await response.json();
+
+                document.getElementById("driverName").textContent =
+                    driver.driverName || "Driver";
+
+                document.getElementById("driverIdText").textContent =
+                    driver.driverId || driverId;
+
+                document.getElementById("driverMobile").textContent =
+                    driver.mobile || "-";
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("status").textContent =
+                    "Unable to load driver details.";
+
+            }
+        }
+
+
+        // -----------------------------------------
+        // Load Assignments
+        // -----------------------------------------
+
+        async function loadAssignments() {
+
+            const container =
+                document.getElementById("assignmentsContainer");
+
+            container.innerHTML =
+                '<div class="loading">Loading assignments...</div>';
+
+            try {
+
+                const response = await fetch(
+                    "/api/drivers/" + driverId + "/assignments"
+                );
+
+                if (!response.ok) {
+                    throw new Error("Unable to load assignments");
+                }
+
+                assignments = await response.json();
+
+                container.innerHTML = "";
+
+                if (!assignments || assignments.length === 0) {
+
+                    container.innerHTML = `
+                        <div class="message">
+                            <h3>No Booking Assigned Yet</h3>
+                            <p>
+                                Admin has not assigned a booking to you yet.
+                            </p>
+                        </div>
+                    `;
+
+                    return;
+                }
+
+                assignments.forEach(function(assignment) {
+
+                    const card =
+                        document.createElement("div");
+
+                    card.className = "assignment-card";
+
+                    card.innerHTML = `
+
+                        <h3>
+                            🚐 Assigned Trip
+                        </h3>
+
+                        <div class="assignment-details">
+
+                            <div class="detail">
+                                <span>Booking ID</span>
+                                <strong>
+                                    ${assignment.bookingId}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                <span>Assignment ID</span>
+                                <strong>
+                                    ${assignment.assignmentId}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                <span>Driver Name</span>
+                                <strong>
+                                    ${assignment.driverName || "-"}
+                                </strong>
+                            </div>
+
+                            <div class="detail">
+                                <span>Vehicle Number</span>
+                                <strong>
+                                    ${assignment.vehicleNumber || "-"}
+                                </strong>
+                            </div>
+
+                        </div>
+
+                        <div class="buttons">
+
+                            <button
+                                class="start-btn"
+                                onclick="startTracking(${assignment.assignmentId})">
+                                ▶ Start GPS Tracking
+                            </button>
+
+                            <button
+                                class="stop-btn"
+                                onclick="stopTracking()">
+                                ⏹ Stop Tracking
+                            </button>
+
+                            <button
+                                class="send-btn"
+                                onclick="sendCurrentLocation(${assignment.assignmentId})">
+                                📍 Send Current Location
+                            </button>
+
+                        </div>
+
+                    `;
+
+                    container.appendChild(card);
+
+                });
+
+            } catch (error) {
+
+                console.error(error);
+
+                container.innerHTML = `
+                    <div class="message">
+                        <h3>Unable to load assignments</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+
+        // -----------------------------------------
+        // Select Assignment
+        // -----------------------------------------
+
+        function selectAssignment(assignment) {
+
+            selectedAssignment = assignment;
+
+            document.getElementById("selectedBooking").textContent =
+                assignment.bookingId;
+
+            document.getElementById("selectedVehicle").textContent =
+                assignment.vehicleNumber || "-";
+
+            document.getElementById("status").textContent =
+                "Booking " + assignment.bookingId +
+                " selected. You can start GPS tracking.";
+
+        }
+
+
+        // -----------------------------------------
+        // Get Assignment By ID
+        // -----------------------------------------
+
+        function getAssignmentById(assignmentId) {
+
+            return assignments.find(function(a) {
+
+                return Number(a.assignmentId) ===
+                       Number(assignmentId);
+
+            });
+
+        }
+
+
+        // -----------------------------------------
+        // Get Current GPS Position
+        // -----------------------------------------
+
+        function getCurrentPosition() {
+
+            return new Promise(function(resolve, reject) {
+
+                if (!navigator.geolocation) {
+
+                    reject(
+                        new Error(
+                            "Geolocation is not supported by this browser."
+                        )
+                    );
+
+                    return;
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    reject,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 0
+                    }
+                );
+
+            });
+
+        }
+
+
+        // -----------------------------------------
+        // Update Map
+        // -----------------------------------------
+
+        function updateMap(position) {
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+            const accuracy =
+                position.coords.accuracy;
+
+            document.getElementById("latitude").textContent =
+                latitude.toFixed(6);
+
+            document.getElementById("longitude").textContent =
+                longitude.toFixed(6);
+
+            document.getElementById("accuracy").textContent =
+                Math.round(accuracy) + " meters";
+
+
+            if (currentMarker) {
+
+                currentMarker.setLatLng(
+                    [latitude, longitude]
+                );
+
+            } else {
+
+                currentMarker = L.marker(
+                    [latitude, longitude]
+                ).addTo(map);
+
+                currentMarker.bindPopup(
+                    "Driver Current Location"
+                );
+
+            }
+
+
+            if (accuracyCircle) {
+
+                accuracyCircle.setLatLng(
+                    [latitude, longitude]
+                );
+
+                accuracyCircle.setRadius(
+                    accuracy
+                );
+
+            } else {
+
+                accuracyCircle =
+                    L.circle(
+                        [latitude, longitude],
+                        {
+                            radius: accuracy
+                        }
+                    ).addTo(map);
+
+            }
+
+
+            map.setView(
+                [latitude, longitude],
+                16
+            );
+
+        }
+
+
+        // -----------------------------------------
+        // Send Location To Backend
+        // -----------------------------------------
+
+        async function sendLocation(position, assignment) {
+
+            if (!assignment) {
+
+                throw new Error(
+                    "Please select an assigned booking."
+                );
+
+            }
+
+            const latitude =
+                position.coords.latitude;
+
+            const longitude =
+                position.coords.longitude;
+
+
+            const driverName =
+                document.getElementById("driverName").textContent;
+
+
+            const vehicleNumber =
+                assignment.vehicleNumber || "";
+
+
+            const url =
+                "/api/tracking/location" +
+                "?bookingId=" +
+                encodeURIComponent(assignment.bookingId) +
+                "&latitude=" +
+                encodeURIComponent(latitude) +
+                "&longitude=" +
+                encodeURIComponent(longitude) +
+                "&vehicleNumber=" +
+                encodeURIComponent(vehicleNumber) +
+                "&driverName=" +
+                encodeURIComponent(driverName);
+
+
+            const response = await fetch(
+                url,
+                {
+                    method: "POST"
+                }
+            );
+
+
+            if (!response.ok) {
+
+                const message =
+                    await response.text();
+
+                throw new Error(
+                    message || "Failed to send location"
+                );
+            }
+
+
+            document.getElementById("lastSent").textContent =
+                new Date().toLocaleString();
+
+            document.getElementById("status").textContent =
+                "Location sent successfully for Booking " +
+                assignment.bookingId;
+
+        }
+
+
+        // -----------------------------------------
+        // Start GPS Tracking
+        // -----------------------------------------
+
+        async function startTracking(assignmentId) {
+
+            stopTracking();
+
+            const assignment =
+                getAssignmentById(assignmentId);
+
+            if (!assignment) {
+
+                alert("Assignment not found.");
+
+                return;
+            }
+
+
+            selectAssignment(assignment);
+
+
+            document.getElementById("status").textContent =
+                "Requesting your current GPS location...";
+
+
+            try {
+
+                const position =
+                    await getCurrentPosition();
+
+                updateMap(position);
+
+                await sendLocation(
+                    position,
+                    assignment
+                );
+
+
+                trackingInterval =
+                    setInterval(async function() {
+
+                        try {
+
+                            const currentPosition =
+                                await getCurrentPosition();
+
+                            updateMap(currentPosition);
+
+                            await sendLocation(
+                                currentPosition,
+                                assignment
+                            );
+
+                        } catch (error) {
+
+                            console.error(
+                                "GPS update error:",
+                                error
+                            );
+
+                            document.getElementById("status").textContent =
+                                "GPS update failed: " +
+                                error.message;
+
+                        }
+
+                    }, 10000);
+
+
+                document.getElementById("status").textContent =
+                    "🟢 GPS Tracking is running. Location is sent every 10 seconds.";
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("status").textContent =
+                    "Unable to get GPS location: " +
+                    error.message;
+
+                alert(
+                    "Please allow location permission in your browser."
+                );
+
+            }
+
+        }
+
+
+        // -----------------------------------------
+        // Stop GPS Tracking
+        // -----------------------------------------
+
+        function stopTracking() {
+
+            if (trackingInterval !== null) {
+
+                clearInterval(trackingInterval);
+
+                trackingInterval = null;
+
+                document.getElementById("status").textContent =
+                    "🔴 GPS Tracking stopped.";
+
+            }
+
+        }
+
+
+        // -----------------------------------------
+        // Send Current Location Only Once
+        // -----------------------------------------
+
+        async function sendCurrentLocation(assignmentId) {
+
+            const assignment =
+                getAssignmentById(assignmentId);
+
+            if (!assignment) {
+
+                alert("Assignment not found.");
+
+                return;
+            }
+
+
+            selectAssignment(assignment);
+
+
+            try {
+
+                document.getElementById("status").textContent =
+                    "Getting current location...";
+
+
+                const position =
+                    await getCurrentPosition();
+
+
+                updateMap(position);
+
+
+                await sendLocation(
+                    position,
+                    assignment
+                );
+
+
+            } catch (error) {
+
+                console.error(error);
+
+                document.getElementById("status").textContent =
+                    "Unable to send location: " +
+                    error.message;
+
+            }
+
+        }
+
+
+        // -----------------------------------------
+        // Logout
+        // -----------------------------------------
+
+        function logout() {
+
+            stopTracking();
+
+            sessionStorage.removeItem("driverId");
+
+            sessionStorage.removeItem("driverLoggedIn");
+
+            window.location.href =
+                "/driver-login.html";
+
+        }
+
+
+        // -----------------------------------------
+        // Page Load
+        // -----------------------------------------
+
+        loadDriver();
+
+        loadAssignments();
+
+    </script>
+
+</body>
+</html>

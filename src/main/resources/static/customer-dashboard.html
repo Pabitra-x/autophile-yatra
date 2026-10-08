@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Customer Dashboard - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* ================= BODY ================= */
+
+        body {
+
+            font-family: Arial, sans-serif;
+
+            min-height: 100vh;
+
+            color: white;
+
+            background-image:
+                linear-gradient(
+                    rgba(0, 0, 0, 0.40),
+                    rgba(0, 0, 0, 0.40)
+                ),
+                url("./images/customer-dashboard-bg.png");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-attachment: fixed;
+        }
+
+        /* ================= NAVBAR ================= */
+
+        .navbar {
+
+            width: 100%;
+
+            padding: 18px 40px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            background: rgba(0, 0, 0, 0.50);
+
+            backdrop-filter: blur(10px);
+
+            border-bottom:
+                1px solid rgba(255, 255, 255, 0.20);
+        }
+
+        .logo {
+
+            font-size: 28px;
+
+            font-weight: bold;
+        }
+
+        .tagline {
+
+            font-size: 13px;
+
+            margin-top: 4px;
+
+            opacity: 0.9;
+        }
+
+        .navbar-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+        /* ================= NAV BUTTON ================= */
+
+        .nav-btn {
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 25px;
+
+            background: white;
+
+            color: #174f86;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+
+            background: #e5f2ff;
+        }
+
+        /* ================= NOTIFICATION ================= */
+
+        .notification-btn {
+
+            border: none;
+
+            padding: 10px 15px;
+
+            border-radius: 25px;
+
+            background: white;
+
+            color: #174f86;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+        }
+
+        .notification-btn:hover {
+
+            background: #e5f2ff;
+        }
+
+        .notification-badge {
+
+            background: #ef4444;
+
+            color: white;
+
+            min-width: 22px;
+
+            height: 22px;
+
+            padding: 2px 6px;
+
+            border-radius: 20px;
+
+            display: inline-flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 12px;
+
+            font-weight: bold;
+        }
+
+        .notification-badge.hidden {
+
+            display: none;
+        }
+
+        /* ================= LOGOUT ================= */
+
+        .logout-btn {
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 25px;
+
+            background: #dc2626;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+
+            background: #b91c1c;
+        }
+
+        /* ================= MAIN ================= */
+
+        .container {
+
+            width: 92%;
+
+            max-width: 1200px;
+
+            margin: 40px auto;
+        }
+
+        /* ================= WELCOME ================= */
+
+        .welcome-section {
+
+            text-align: center;
+
+            margin-bottom: 35px;
+        }
+
+        .welcome-section h1 {
+
+            font-size: 42px;
+
+            margin-bottom: 10px;
+
+            text-shadow:
+                2px 2px 6px rgba(0, 0, 0, 0.6);
+        }
+
+        .welcome-section p {
+
+            font-size: 17px;
+
+            text-shadow:
+                1px 1px 4px rgba(0, 0, 0, 0.6);
+        }
+
+        /* ================= DASHBOARD GRID ================= */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 22px;
+        }
+
+        /* ================= CARD ================= */
+
+        .dashboard-card {
+
+            background:
+                rgba(255, 255, 255, 0.94);
+
+            color: #222;
+
+            border-radius: 20px;
+
+            padding: 28px;
+
+            min-height: 210px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: space-between;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.25);
+
+            transition:
+                transform 0.25s,
+                box-shadow 0.25s;
+        }
+
+        .dashboard-card:hover {
+
+            transform:
+                translateY(-7px);
+
+            box-shadow:
+                0 15px 35px rgba(0, 0, 0, 0.35);
+        }
+
+        .card-icon {
+
+            font-size: 45px;
+
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card h2 {
+
+            color: #174f86;
+
+            margin-bottom: 10px;
+
+            font-size: 22px;
+        }
+
+        .dashboard-card p {
+
+            color: #555;
+
+            line-height: 1.5;
+
+            font-size: 14px;
+        }
+
+        .card-btn {
+
+            margin-top: 20px;
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 25px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            text-decoration: none;
+
+            text-align: center;
+
+            display: block;
+        }
+
+        .card-btn:hover {
+
+            background: #1d4ed8;
+        }
+
+        /* ================= FOOTER ================= */
+
+        footer {
+
+            text-align: center;
+
+            margin-top: 50px;
+
+            padding: 20px;
+
+            background:
+                rgba(0, 0, 0, 0.45);
+
+            font-size: 14px;
+        }
+
+        /* ================= MOBILE ================= */
+
+        @media (max-width: 900px) {
+
+            .dashboard-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .navbar {
+
+                padding: 15px 20px;
+
+                flex-direction: column;
+
+                gap: 15px;
+
+                text-align: center;
+            }
+
+            .logo {
+
+                font-size: 23px;
+            }
+
+            .navbar-right {
+
+                justify-content: center;
+            }
+
+            .container {
+
+                width: 94%;
+
+                margin-top: 30px;
+            }
+
+            .welcome-section h1 {
+
+                font-size: 30px;
+            }
+
+            .dashboard-grid {
+
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <div class="navbar">
+
+        <div>
+
+            <div class="logo">
+                🚗 Autophile Yatra
+            </div>
+
+            <div class="tagline">
+                Travel • Explore • Discover
+            </div>
+
+        </div>
+
+        <div class="navbar-right">
+
+            <!-- DASHBOARD -->
+
+            <button
+                type="button"
+                class="nav-btn"
+                onclick="loadDashboard()">
+
+                🏠 Dashboard
+
+            </button>
+
+            <!-- NOTIFICATION BUTTON -->
+
+            <button
+                type="button"
+                class="notification-btn"
+                onclick="openNotifications()">
+
+                🔔 Notifications
+
+                <span
+                    id="notificationBadge"
+                    class="notification-badge hidden">
+
+                    0
+
+                </span>
+
+            </button>
+
+            <!-- LOGOUT -->
+
+            <button
+                type="button"
+                class="logout-btn"
+                onclick="logoutUser()">
+
+                🚪 Logout
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <div class="container">
+
+        <!-- ================= WELCOME ================= -->
+
+        <div class="welcome-section">
+
+            <h1>
+
+                Welcome,
+
+                <span id="customerName">
+                    Customer
+                </span>
+
+                ! 👋
+
+            </h1>
+
+            <p>
+
+                Manage your trips, bookings,
+                payments and travel experience.
+
+            </p>
+
+        </div>
+
+        <!-- =================================================
+             DASHBOARD CARDS
+        ================================================== -->
+
+        <div class="dashboard-grid">
+
+            <!-- ================= TOURS ================= -->
+
+            <div class="dashboard-card">
+
+                <div>
+
+                    <div class="card-icon">
+                        🌍
+                    </div>
+
+                    <h2>
+                        Explore Tours
+                    </h2>
+
+                    <p>
+
+                        Explore available tour
+                        packages and choose your
+                        next destination.
+
+                    </p>
+
+                </div>
+
+                <a
+                    href="./tours.html"
+                    class="card-btn">
+
+                    Explore Tours
+
+                </a>
+
+            </div>
+
+            <!-- ================= BOOKINGS ================= -->
+
+            <div class="dashboard-card">
+
+                <div>
+
+                    <div class="card-icon">
+                        🎫
+                    </div>
+
+                    <h2>
+                        My Bookings
+                    </h2>
+
+                    <p>
+
+                        View your bookings,
+                        booking status and
+                        travel information.
+
+                    </p>
+
+                </div>
+
+                <a
+                    href="./my-bookings.html"
+                    class="card-btn">
+
+                    View My Bookings
+
+                </a>
+
+            </div>
+
+            <!-- ================= TRACKING ================= -->
+
+            <div class="dashboard-card">
+
+                <div>
+
+                    <div class="card-icon">
+                        📍
+                    </div>
+
+                    <h2>
+                        Live Trip Tracking
+                    </h2>
+
+                    <p>
+
+                        Track your vehicle and
+                        trip location when your
+                        trip is active.
+
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="card-btn"
+                    onclick="openTracking()">
+
+                    Track My Trip
+
+                </button>
+
+            </div>
+
+            <!-- ================= PAYMENTS ================= -->
+
+            <div class="dashboard-card">
+
+                <div>
+
+                    <div class="card-icon">
+                        💳
+                    </div>
+
+                    <h2>
+                        Payments
+                    </h2>
+
+                    <p>
+
+                        Manage advance and
+                        final trip payments.
+
+                    </p>
+
+                </div>
+
+                <a
+                    href="./my-bookings.html"
+                    class="card-btn">
+
+                    View Payments
+
+                </a>
+
+            </div>
+
+            <!-- ================= REVIEWS ================= -->
+
+            <div class="dashboard-card">
+
+                <div>
+
+                    <div class="card-icon">
+                        ⭐
+                    </div>
+
+                    <h2>
+                        Reviews & Feedback
+                    </h2>
+
+                    <p>
+
+                        Share your travel
+                        experience and view
+                        your reviews.
+
+                    </p>
+
+                </div>
+
+                <a
+                    href="./customer-reviews.html"
+                    class="card-btn">
+
+                    Reviews
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        © 2026 Autophile Yatra.
+        All Rights Reserved.
+
+    </footer>
+
+    <!-- =====================================================
+         JAVASCRIPT
+    ====================================================== -->
+
+    <script>
+
+        /* =====================================================
+           CUSTOMER ID
+        ===================================================== */
+
+        const customerId =
+            sessionStorage.getItem(
+                "customerId"
+            );
+
+        /* =====================================================
+           LOGIN CHECK
+        ===================================================== */
+
+        if (!customerId) {
+
+            window.location.replace(
+                "./login.html"
+            );
+
+        }
+
+        /* =====================================================
+           DASHBOARD BUTTON
+        ===================================================== */
+
+        function loadDashboard() {
+
+            /*
+             * Already on dashboard.
+             * Reload the page.
+             */
+
+            window.location.reload();
+
+        }
+
+        /* =====================================================
+           OPEN NOTIFICATIONS
+        ===================================================== */
+
+        function openNotifications() {
+
+            window.location.href =
+                "./customer-notifications.html";
+
+        }
+
+        /* =====================================================
+           LOGOUT
+        ===================================================== */
+
+        function logoutUser() {
+
+            sessionStorage.removeItem(
+                "customerId"
+            );
+
+            sessionStorage.removeItem(
+                "customerMobile"
+            );
+
+            sessionStorage.removeItem(
+                "trackingBookingId"
+            );
+
+            window.location.replace(
+                "./login.html"
+            );
+
+        }
+
+        /* =====================================================
+           OPEN TRACKING
+        ===================================================== */
+
+        function openTracking() {
+
+            const trackingBookingId =
+                sessionStorage.getItem(
+                    "trackingBookingId"
+                );
+
+            if (!trackingBookingId) {
+
+                alert(
+                    "No active trip is available for tracking."
+                );
+
+                window.location.href =
+                    "./my-bookings.html";
+
+                return;
+
+            }
+
+            window.location.href =
+                "./tracking.html";
+
+        }
+
+        /* =====================================================
+           LOAD CUSTOMER NAME
+        ===================================================== */
+
+        async function loadCustomerName() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/customers"
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load customers"
+                    );
+
+                }
+
+                const customers =
+                    await response.json();
+
+                /*
+                 * Find logged-in customer.
+                 *
+                 * Backend Customer uses id.
+                 * We also support customerId
+                 * in case the JSON uses that name.
+                 */
+
+                const customer =
+                    customers.find(
+                        function(c) {
+
+                            return String(
+                                c.id ??
+                                c.customerId
+                            )
+                            ===
+                            String(
+                                customerId
+                            );
+
+                        }
+                    );
+
+                const nameElement =
+                    document.getElementById(
+                        "customerName"
+                    );
+
+                if (
+                    customer &&
+                    customer.name
+                ) {
+
+                    nameElement.textContent =
+                        customer.name;
+
+                }
+                else {
+
+                    nameElement.textContent =
+                        "Customer";
+
+                }
+
+            }
+            catch(error) {
+
+                console.error(
+                    "Customer name error:",
+                    error
+                );
+
+                document.getElementById(
+                    "customerName"
+                ).textContent =
+                    "Customer";
+
+            }
+
+        }
+
+        /* =====================================================
+           LOAD UNREAD NOTIFICATION COUNT
+        ===================================================== */
+
+        async function loadNotificationCount() {
+
+            if (!customerId) {
+
+                return;
+
+            }
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/api/notifications/customer/"
+                        + encodeURIComponent(
+                            customerId
+                        )
+                        + "/unread-count"
+                    );
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Unable to load notification count."
+                    );
+
+                }
+
+                const count =
+                    await response.json();
+
+                updateNotificationBadge(
+                    Number(count) || 0
+                );
+
+            }
+            catch(error) {
+
+                console.error(
+                    "Notification count error:",
+                    error
+                );
+
+            }
+
+        }
+
+        /* =====================================================
+           UPDATE NOTIFICATION BADGE
+        ===================================================== */
+
+        function updateNotificationBadge(
+            count
+        ) {
+
+            const badge =
+                document.getElementById(
+                    "notificationBadge"
+                );
+
+            if (count > 0) {
+
+                badge.innerText =
+                    count;
+
+                badge.classList.remove(
+                    "hidden"
+                );
+
+            }
+            else {
+
+                badge.classList.add(
+                    "hidden"
+                );
+
+            }
+
+        }
+
+        /* =====================================================
+           START
+        ===================================================== */
+
+        loadCustomerName();
+
+        loadNotificationCount();
+
+        /* =====================================================
+           REFRESH NOTIFICATION COUNT
+        ===================================================== */
+
+        setInterval(
+            loadNotificationCount,
+            10000
+        );
+
+    </script>
+
+</body>
+
+</html>

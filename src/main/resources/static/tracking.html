@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Live Trip Tracking - Autophile Yatra</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          crossorigin=""/>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #222;
+        }
+
+        header {
+            background: #0d6efd;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        header p {
+            margin: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 25px auto;
+        }
+
+        .booking-box {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .booking-box strong {
+            color: #0d6efd;
+        }
+
+        #map {
+            width: 100%;
+            height: 500px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .details {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #555;
+            font-size: 16px;
+        }
+
+        .card p {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 0;
+            word-break: break-word;
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .back-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .refresh-btn {
+            background: #0d6efd;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        @media (max-width: 800px) {
+            .details {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .details {
+                grid-template-columns: 1fr;
+            }
+
+            #map {
+                height: 400px;
+            }
+
+            .container {
+                width: 95%;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Live Trip Tracking</h1>
+    <p>Track your vehicle during your Autophile Yatra trip.</p>
+</header>
+
+<div class="container">
+
+    <!-- Booking Information -->
+    <div class="booking-box">
+        <strong>Booking ID:</strong>
+        <span id="bookingId">Loading...</span>
+    </div>
+
+    <!-- Map -->
+    <div id="map"></div>
+
+    <!-- Vehicle Details -->
+    <div class="details">
+
+        <div class="card">
+            <h3>Vehicle</h3>
+            <p id="vehicle">Waiting...</p>
+        </div>
+
+        <div class="card">
+            <h3>Driver</h3>
+            <p id="driver">Waiting...</p>
+        </div>
+
+        <div class="card">
+            <h3>Current Location</h3>
+            <p id="location">Waiting...</p>
+        </div>
+
+        <div class="card">
+            <h3>Last Updated</h3>
+            <p id="updatedAt">Waiting...</p>
+        </div>
+
+    </div>
+
+    <!-- Status -->
+    <div class="booking-box">
+        <p id="status" class="info">
+            Connecting to vehicle...
+        </p>
+    </div>
+
+    <!-- Buttons -->
+    <div class="buttons">
+
+        <button class="refresh-btn"
+                onclick="loadVehicleLocation()">
+            Refresh Location
+        </button>
+
+        <button class="back-btn"
+                onclick="goBack()">
+            Back to Dashboard
+        </button>
+
+    </div>
+
+</div>
+
+
+<!-- Leaflet JS -->
+<script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    crossorigin="">
+</script>
+
+
+<script>
+
+    // ==================================================
+    // CUSTOMER LOGIN CHECK
+    // ==================================================
+
+    const customerId =
+        sessionStorage.getItem("customerId");
+
+    if (!customerId) {
+
+        alert("Please login first.");
+
+        window.location.href = "/login.html";
+    }
+
+
+    // ==================================================
+    // GET BOOKING ID
+    // ==================================================
+
+    const trackingBookingId =
+        sessionStorage.getItem("trackingBookingId");
+
+
+    // Booking ID is required
+    if (!trackingBookingId) {
+
+        alert("Please select a booking for tracking.");
+
+        window.location.href = "/my-bookings.html";
+    }
+
+
+    const bookingId = trackingBookingId;
+
+
+    // Display booking ID
+    document.getElementById("bookingId").textContent =
+        bookingId;
+
+
+    // ==================================================
+    // CREATE MAP
+    // ==================================================
+
+    const map = L.map("map").setView(
+        [20.5937, 78.9629],
+        5
+    );
+
+
+    // OpenStreetMap
+    L.tileLayer(
+        "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        {
+            maxZoom: 19,
+            attribution:
+                "&copy; OpenStreetMap contributors"
+        }
+    ).addTo(map);
+
+
+    // Vehicle marker
+    let vehicleMarker = null;
+
+
+    // ==================================================
+    // LOAD VEHICLE LOCATION
+    // ==================================================
+
+    function loadVehicleLocation() {
+
+        const status =
+            document.getElementById("status");
+
+        status.textContent =
+            "Loading vehicle location...";
+
+        status.className = "info";
+
+
+        fetch(
+            "/api/tracking/location/" + bookingId
+        )
+
+        .then(response => {
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Vehicle location not found"
+                );
+            }
+
+            return response.json();
+        })
+
+        .then(data => {
+
+            console.log(
+                "Vehicle Location:",
+                data
+            );
+
+
+            // ==================================================
+            // VEHICLE NUMBER
+            // ==================================================
+
+            document.getElementById("vehicle")
+                .textContent =
+                data.vehicleNumber ||
+                "Not available";
+
+
+            // ==================================================
+            // DRIVER NAME
+            // ==================================================
+
+            document.getElementById("driver")
+                .textContent =
+                data.driverName ||
+                "Not available";
+
+
+            // ==================================================
+            // LATITUDE & LONGITUDE
+            // ==================================================
+
+            const latitude =
+                Number(data.latitude);
+
+            const longitude =
+                Number(data.longitude);
+
+
+            // Validate coordinates
+            if (
+                !Number.isFinite(latitude) ||
+                !Number.isFinite(longitude)
+            ) {
+
+                throw new Error(
+                    "Invalid vehicle coordinates"
+                );
+            }
+
+
+            document.getElementById("location")
+                .textContent =
+                latitude.toFixed(6) +
+                ", " +
+                longitude.toFixed(6);
+
+
+            // ==================================================
+            // UPDATED TIME
+            // ==================================================
+
+            if (data.updatedAt) {
+
+                const date =
+                    new Date(data.updatedAt);
+
+                document.getElementById("updatedAt")
+                    .textContent =
+                    date.toLocaleString();
+
+            } else {
+
+                document.getElementById("updatedAt")
+                    .textContent =
+                    "Not available";
+            }
+
+
+            // ==================================================
+            // UPDATE MAP
+            // ==================================================
+
+            if (vehicleMarker === null) {
+
+                vehicleMarker =
+                    L.marker(
+                        [latitude, longitude]
+                    ).addTo(map);
+
+            } else {
+
+                vehicleMarker.setLatLng(
+                    [latitude, longitude]
+                );
+            }
+
+
+            // Popup
+            vehicleMarker.bindPopup(
+                "<b>Vehicle:</b> " +
+                (data.vehicleNumber ||
+                 "Unknown") +
+
+                "<br><b>Driver:</b> " +
+
+                (data.driverName ||
+                 "Not available")
+            );
+
+
+            // Move map to vehicle
+            map.setView(
+                [latitude, longitude],
+                15
+            );
+
+
+            // Open popup
+            vehicleMarker.openPopup();
+
+
+            // ==================================================
+            // SUCCESS STATUS
+            // ==================================================
+
+            status.textContent =
+                "Vehicle location updated successfully.";
+
+            status.className = "success";
+
+        })
+
+        .catch(error => {
+
+            console.error(
+                "Tracking Error:",
+                error
+            );
+
+
+            document.getElementById("vehicle")
+                .textContent =
+                "Not available";
+
+
+            document.getElementById("driver")
+                .textContent =
+                "Not available";
+
+
+            document.getElementById("location")
+                .textContent =
+                "Location unavailable";
+
+
+            document.getElementById("updatedAt")
+                .textContent =
+                "Not available";
+
+
+            status.textContent =
+                "Vehicle location is not available yet.";
+
+            status.className = "error";
+        });
+    }
+
+
+    // ==================================================
+    // INITIAL LOAD
+    // ==================================================
+
+    loadVehicleLocation();
+
+
+    // ==================================================
+    // AUTO REFRESH EVERY 10 SECONDS
+    // ==================================================
+
+    const trackingInterval =
+        setInterval(
+            loadVehicleLocation,
+            10000
+        );
+
+
+    // ==================================================
+    // BACK TO DASHBOARD
+    // ==================================================
+
+    function goBack() {
+
+        clearInterval(trackingInterval);
+
+        window.location.href =
+            "/customer-dashboard.html";
+    }
+
+</script>
+
+</body>
+</html>

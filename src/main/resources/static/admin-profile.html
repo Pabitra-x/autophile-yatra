@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Profile - Autophile Yatra</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #222;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #0b3d91;
+            color: white;
+
+            padding: 18px 30px;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+        }
+
+        .back-btn {
+            background: white;
+            color: #0b3d91;
+
+            border: none;
+
+            padding: 10px 18px;
+
+            border-radius: 6px;
+
+            cursor: pointer;
+
+            font-weight: bold;
+        }
+
+        .container {
+            width: 92%;
+            max-width: 900px;
+
+            margin: 40px auto;
+        }
+
+        .profile-card {
+            background: white;
+
+            border-radius: 12px;
+
+            padding: 35px;
+
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.10);
+        }
+
+        .profile-header {
+            text-align: center;
+
+            margin-bottom: 30px;
+        }
+
+        .profile-icon {
+            width: 90px;
+            height: 90px;
+
+            margin: 0 auto 15px;
+
+            border-radius: 50%;
+
+            background: #0b3d91;
+
+            color: white;
+
+            display: flex;
+
+            justify-content: center;
+            align-items: center;
+
+            font-size: 45px;
+        }
+
+        .profile-header h2 {
+            color: #0b3d91;
+
+            margin-bottom: 5px;
+        }
+
+        .profile-header p {
+            color: #777;
+        }
+
+        .info-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+        }
+
+        .info-box {
+            background: #f7f9fc;
+
+            border: 1px solid #e1e5eb;
+
+            border-radius: 8px;
+
+            padding: 18px;
+        }
+
+        .info-label {
+            color: #777;
+
+            font-size: 13px;
+
+            margin-bottom: 7px;
+        }
+
+        .info-value {
+            color: #222;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+        .admin-id-box {
+            grid-column: 1 / -1;
+
+            background: #eef5ff;
+
+            border-color: #c9ddff;
+        }
+
+        .buttons {
+            display: flex;
+
+            gap: 15px;
+
+            margin-top: 30px;
+
+            flex-wrap: wrap;
+        }
+
+        .dashboard-btn,
+        .logout-btn {
+            flex: 1;
+
+            min-width: 180px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-weight: bold;
+
+            font-size: 15px;
+        }
+
+        .dashboard-btn {
+            background: #0b3d91;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+        }
+
+        .dashboard-btn:hover {
+            background: #082f70;
+        }
+
+        .logout-btn:hover {
+            background: #b02a37;
+        }
+
+        .note {
+            margin-top: 25px;
+
+            padding: 15px;
+
+            background: #fff8e1;
+
+            border-left: 4px solid #f0ad00;
+
+            color: #665200;
+
+            line-height: 1.5;
+
+            border-radius: 5px;
+        }
+
+        @media (max-width: 650px) {
+
+            .header {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 19px;
+            }
+
+            .container {
+                width: 94%;
+                margin: 25px auto;
+            }
+
+            .profile-card {
+                padding: 22px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-id-box {
+                grid-column: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- ================= HEADER ================= -->
+
+    <div class="header">
+
+        <h1>
+            Admin Profile
+        </h1>
+
+        <button
+            class="back-btn"
+            onclick="goDashboard()">
+
+            Back to Dashboard
+
+        </button>
+
+    </div>
+
+
+
+    <!-- ================= MAIN ================= -->
+
+    <div class="container">
+
+        <div class="profile-card">
+
+
+            <!-- PROFILE HEADER -->
+
+            <div class="profile-header">
+
+                <div class="profile-icon">
+                    👨‍💼
+                </div>
+
+                <h2>
+                    Administrator
+                </h2>
+
+                <p>
+                    Autophile Yatra Administration
+                </p>
+
+            </div>
+
+
+
+            <!-- PROFILE INFORMATION -->
+
+            <div class="info-grid">
+
+
+                <div class="info-box admin-id-box">
+
+                    <div class="info-label">
+                        Admin ID
+                    </div>
+
+                    <div
+                        class="info-value"
+                        id="adminId">
+
+                        Loading...
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Account Type
+                    </div>
+
+                    <div class="info-value">
+                        Administrator
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Account Status
+                    </div>
+
+                    <div
+                        class="info-value"
+                        style="color:#16a34a;">
+
+                        Active
+
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Application
+                    </div>
+
+                    <div class="info-value">
+                        Autophile Yatra
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Access
+                    </div>
+
+                    <div class="info-value">
+                        Admin Dashboard
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+
+            <!-- BUTTONS -->
+
+            <div class="buttons">
+
+                <button
+                    class="dashboard-btn"
+                    onclick="goDashboard()">
+
+                    Dashboard
+
+                </button>
+
+
+                <button
+                    class="logout-btn"
+                    onclick="logout()">
+
+                    Logout
+
+                </button>
+
+            </div>
+
+
+
+            <div class="note">
+
+                <strong>Note:</strong>
+                Your admin account details are managed
+                securely by the application. Passwords are
+                not displayed on this page.
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script>
+
+
+        /* ==========================================
+           ADMIN LOGIN CHECK
+        ========================================== */
+
+        const adminId =
+            sessionStorage.getItem("adminId");
+
+
+        if (!adminId) {
+
+            alert(
+                "Please login as admin first."
+            );
+
+            window.location.href =
+                "/admin-login.html";
+
+        }
+
+
+
+        /* ==========================================
+           DISPLAY ADMIN ID
+        ========================================== */
+
+        document.getElementById(
+            "adminId"
+        ).textContent =
+            adminId || "-";
+
+
+
+        /* ==========================================
+           DASHBOARD
+        ========================================== */
+
+        function goDashboard() {
+
+            window.location.href =
+                "/admin-dashboard.html";
+
+        }
+
+
+
+        /* ==========================================
+           LOGOUT
+        ========================================== */
+
+        function logout() {
+
+            sessionStorage.removeItem(
+                "adminId"
+            );
+
+            window.location.href =
+                "/admin-login.html";
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

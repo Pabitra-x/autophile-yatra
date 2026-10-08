@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Driver GPS Tracking - Autophile Yatra</title>
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #222;
+        }
+
+        .header {
+            background: #0d47a1;
+            color: white;
+            padding: 18px 25px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin-bottom: 5px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 25px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+            margin-bottom: 20px;
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            color: #0d47a1;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #0d47a1;
+        }
+
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            border: none;
+            padding: 12px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        .btn-location {
+            background: #1976d2;
+            color: white;
+        }
+
+        .btn-start {
+            background: #2e7d32;
+            color: white;
+        }
+
+        .btn-stop {
+            background: #c62828;
+            color: white;
+        }
+
+        .btn-send {
+            background: #ef6c00;
+            color: white;
+        }
+
+        .btn-back {
+            background: #555;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        #status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 7px;
+            background: #e3f2fd;
+            color: #0d47a1;
+            font-weight: bold;
+        }
+
+        .location-info {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .info-box {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 7px;
+            color: #555;
+        }
+
+        .info-value {
+            color: #0d47a1;
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        /* Leaflet Map */
+        #driverMap {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            margin-top: 15px;
+        }
+
+        .map-title {
+            margin-top: 25px;
+            margin-bottom: 10px;
+            color: #0d47a1;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+        }
+
+        @media (max-width: 800px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .location-info {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .location-info {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            #driverMap {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Autophile Yatra</h1>
+        <p>Driver GPS Tracking</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Driver Details -->
+        <div class="card">
+
+            <h2>Driver & Vehicle Details</h2>
+
+            <div class="form-row">
+
+                <div class="form-group">
+                    <label for="bookingId">Booking ID</label>
+                    <input
+                        type="number"
+                        id="bookingId"
+                        placeholder="Enter Booking ID"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="driverName">Driver Name</label>
+                    <input
+                        type="text"
+                        id="driverName"
+                        placeholder="Enter Driver Name"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleNumber">Vehicle Number</label>
+                    <input
+                        type="text"
+                        id="vehicleNumber"
+                        placeholder="Enter Vehicle Number"
+                    >
+                </div>
+
+            </div>
+
+            <div class="button-group">
+
+                <button
+                    class="btn-location"
+                    onclick="getCurrentLocation()">
+                    📍 Get My Current Location
+                </button>
+
+                <button
+                    class="btn-start"
+                    onclick="startTracking()">
+                    ▶ Start GPS Tracking
+                </button>
+
+                <button
+                    class="btn-stop"
+                    onclick="stopTracking()">
+                    ⛔ Stop GPS Tracking
+                </button>
+
+                <button
+                    class="btn-send"
+                    onclick="sendCurrentLocation()">
+                    📡 Send Current Location
+                </button>
+
+                <button
+                    class="btn-back"
+                    onclick="goBack()">
+                    ← Back
+                </button>
+
+            </div>
+
+            <div id="status">
+                GPS tracking is stopped.
+            </div>
+
+        </div>
+
+
+        <!-- Current Location -->
+        <div class="card">
+
+            <h2>Current GPS Location</h2>
+
+            <div class="location-info">
+
+                <div class="info-box">
+                    <strong>Latitude</strong>
+                    <span
+                        id="latitude"
+                        class="info-value">
+                        Not available
+                    </span>
+                </div>
+
+                <div class="info-box">
+                    <strong>Longitude</strong>
+                    <span
+                        id="longitude"
+                        class="info-value">
+                        Not available
+                    </span>
+                </div>
+
+                <div class="info-box">
+                    <strong>Accuracy</strong>
+                    <span
+                        id="accuracy"
+                        class="info-value">
+                        Not available
+                    </span>
+                </div>
+
+                <div class="info-box">
+                    <strong>Last Updated</strong>
+                    <span
+                        id="lastUpdated"
+                        class="info-value">
+                        Not available
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Map -->
+        <div class="card">
+
+            <h2 class="map-title">
+                🗺️ Live Driver Location
+            </h2>
+
+            <div id="driverMap"></div>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        © 2026 Autophile Yatra
+    </div>
+
+
+    <!-- Leaflet JavaScript -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+    </script>
+
+
+    <script>
+
+        // =========================================================
+        // VARIABLES
+        // =========================================================
+
+        let trackingInterval = null;
+
+        let currentLatitude = null;
+        let currentLongitude = null;
+        let currentAccuracy = null;
+
+        let driverMarker = null;
+        let accuracyCircle = null;
+
+
+        // =========================================================
+        // INITIALIZE MAP
+        // =========================================================
+
+        const defaultLatitude = 20.5937;
+        const defaultLongitude = 78.9629;
+
+        const driverMap = L.map("driverMap").setView(
+            [defaultLatitude, defaultLongitude],
+            5
+        );
+
+
+        // OpenStreetMap tiles
+        L.tileLayer(
+            "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+            {
+                maxZoom: 19,
+                attribution: "&copy; OpenStreetMap contributors"
+            }
+        ).addTo(driverMap);
+
+
+        // Default marker
+        driverMarker = L.marker(
+            [defaultLatitude, defaultLongitude]
+        ).addTo(driverMap);
+
+        driverMarker.bindPopup(
+            "<b>Driver Location</b><br>" +
+            "Waiting for GPS location..."
+        );
+
+
+        // =========================================================
+        // GET INPUT VALUES
+        // =========================================================
+
+        function getBookingId() {
+
+            const bookingId =
+                document.getElementById("bookingId").value.trim();
+
+            if (!bookingId) {
+                throw new Error("Please enter Booking ID");
+            }
+
+            return bookingId;
+        }
+
+
+        function getDriverName() {
+
+            const driverName =
+                document.getElementById("driverName").value.trim();
+
+            if (!driverName) {
+                throw new Error("Please enter Driver Name");
+            }
+
+            return driverName;
+        }
+
+
+        function getVehicleNumber() {
+
+            const vehicleNumber =
+                document.getElementById("vehicleNumber").value.trim();
+
+            if (!vehicleNumber) {
+                throw new Error("Please enter Vehicle Number");
+            }
+
+            return vehicleNumber;
+        }
+
+
+        // =========================================================
+        // STATUS MESSAGE
+        // =========================================================
+
+        function showStatus(message) {
+
+            document.getElementById("status").innerText = message;
+        }
+
+
+        // =========================================================
+        // GET CURRENT GPS LOCATION
+        // =========================================================
+
+        function getCurrentLocation() {
+
+            try {
+
+                getBookingId();
+                getDriverName();
+                getVehicleNumber();
+
+            } catch (error) {
+
+                showStatus(error.message);
+                return;
+            }
+
+
+            if (!navigator.geolocation) {
+
+                showStatus(
+                    "Geolocation is not supported by this browser."
+                );
+
+                return;
+            }
+
+
+            showStatus(
+                "Getting your current GPS location..."
+            );
+
+
+            navigator.geolocation.getCurrentPosition(
+
+                function(position) {
+
+                    updateLocationOnPage(position);
+
+                    showStatus(
+                        "Current GPS location found successfully."
+                    );
+
+                },
+
+                function(error) {
+
+                    handleGpsError(error);
+
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+
+            );
+        }
+
+
+        // =========================================================
+        // UPDATE LOCATION ON PAGE + MAP
+        // =========================================================
+
+        function updateLocationOnPage(position) {
+
+            currentLatitude =
+                position.coords.latitude;
+
+            currentLongitude =
+                position.coords.longitude;
+
+            currentAccuracy =
+                position.coords.accuracy;
+
+
+            document.getElementById("latitude").innerText =
+                currentLatitude.toFixed(6);
+
+            document.getElementById("longitude").innerText =
+                currentLongitude.toFixed(6);
+
+            document.getElementById("accuracy").innerText =
+                Math.round(currentAccuracy) + " meters";
+
+            document.getElementById("lastUpdated").innerText =
+                new Date().toLocaleString();
+
+
+            updateMap(
+                currentLatitude,
+                currentLongitude,
+                currentAccuracy
+            );
+        }
+
+
+        // =========================================================
+        // UPDATE LEAFLET MAP
+        // =========================================================
+
+        function updateMap(latitude, longitude, accuracy) {
+
+            const newPosition =
+                [latitude, longitude];
+
+
+            // Move map to current GPS position
+            driverMap.setView(
+                newPosition,
+                16
+            );
+
+
+            // Remove old marker
+            if (driverMarker) {
+                driverMap.removeLayer(driverMarker);
+            }
+
+
+            // Remove old accuracy circle
+            if (accuracyCircle) {
+                driverMap.removeLayer(accuracyCircle);
+            }
+
+
+            // Create new driver marker
+            driverMarker =
+                L.marker(newPosition)
+                .addTo(driverMap);
+
+
+            const driverName =
+                document.getElementById("driverName").value
+                || "Driver";
+
+
+            const vehicleNumber =
+                document.getElementById("vehicleNumber").value
+                || "Vehicle";
+
+
+            driverMarker.bindPopup(
+
+                "<b>🚗 Driver Location</b><br>" +
+                "Driver: " + escapeHtml(driverName) + "<br>" +
+                "Vehicle: " + escapeHtml(vehicleNumber) + "<br>" +
+                "Latitude: " + latitude.toFixed(6) + "<br>" +
+                "Longitude: " + longitude.toFixed(6)
+
+            ).openPopup();
+
+
+            // Accuracy circle
+            accuracyCircle =
+                L.circle(
+                    newPosition,
+                    {
+                        radius: accuracy || 0
+                    }
+                ).addTo(driverMap);
+
+        }
+
+
+        // =========================================================
+        // SEND CURRENT LOCATION
+        // =========================================================
+
+        function sendCurrentLocation() {
+
+            try {
+
+                getBookingId();
+                getDriverName();
+                getVehicleNumber();
+
+            } catch (error) {
+
+                showStatus(error.message);
+                return;
+            }
+
+
+            if (
+                currentLatitude === null ||
+                currentLongitude === null
+            ) {
+
+                showStatus(
+                    "Please get your GPS location first."
+                );
+
+                return;
+            }
+
+
+            sendLocationToServer();
+        }
+
+
+        // =========================================================
+        // SEND LOCATION TO SPRING BOOT
+        // =========================================================
+
+        function sendLocationToServer() {
+
+            const bookingId =
+                document.getElementById("bookingId").value.trim();
+
+            const driverName =
+                document.getElementById("driverName").value.trim();
+
+            const vehicleNumber =
+                document.getElementById("vehicleNumber").value.trim();
+
+
+            const url =
+                "/api/tracking/location" +
+                "?bookingId=" + encodeURIComponent(bookingId) +
+                "&latitude=" + encodeURIComponent(currentLatitude) +
+                "&longitude=" + encodeURIComponent(currentLongitude) +
+                "&vehicleNumber=" + encodeURIComponent(vehicleNumber) +
+                "&driverName=" + encodeURIComponent(driverName);
+
+
+            showStatus(
+                "Sending GPS location to server..."
+            );
+
+
+            fetch(url, {
+                method: "POST"
+            })
+
+            .then(async response => {
+
+                const text = await response.text();
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        text || "Server rejected the GPS location"
+                    );
+                }
+
+                return text;
+            })
+
+            .then(data => {
+
+                showStatus(
+                    "✅ Vehicle location sent successfully."
+                );
+
+                console.log(
+                    "Server response:",
+                    data
+                );
+
+            })
+
+            .catch(error => {
+
+                console.error(
+                    "Location API error:",
+                    error
+                );
+
+                showStatus(
+                    "❌ Unable to send location: " +
+                    error.message
+                );
+
+            });
+        }
+
+
+        // =========================================================
+        // START GPS TRACKING
+        // =========================================================
+
+        function startTracking() {
+
+            try {
+
+                getBookingId();
+                getDriverName();
+                getVehicleNumber();
+
+            } catch (error) {
+
+                showStatus(error.message);
+                return;
+            }
+
+
+            if (!navigator.geolocation) {
+
+                showStatus(
+                    "Geolocation is not supported by this browser."
+                );
+
+                return;
+            }
+
+
+            // Avoid multiple intervals
+            if (trackingInterval !== null) {
+
+                showStatus(
+                    "GPS tracking is already running."
+                );
+
+                return;
+            }
+
+
+            showStatus(
+                "🟢 GPS tracking started. Getting location..."
+            );
+
+
+            // Get location immediately
+            updateVehicleLocation();
+
+
+            // Get location every 10 seconds
+            trackingInterval =
+                setInterval(
+                    updateVehicleLocation,
+                    10000
+                );
+        }
+
+
+        // =========================================================
+        // UPDATE VEHICLE LOCATION
+        // =========================================================
+
+        function updateVehicleLocation() {
+
+            navigator.geolocation.getCurrentPosition(
+
+                function(position) {
+
+                    updateLocationOnPage(position);
+
+                    sendLocationToServer();
+
+                },
+
+                function(error) {
+
+                    handleGpsError(error);
+
+                },
+
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 0
+                }
+
+            );
+        }
+
+
+        // =========================================================
+        // STOP GPS TRACKING
+        // =========================================================
+
+        function stopTracking() {
+
+            if (trackingInterval !== null) {
+
+                clearInterval(
+                    trackingInterval
+                );
+
+                trackingInterval = null;
+            }
+
+
+            showStatus(
+                "🔴 GPS tracking stopped."
+            );
+        }
+
+
+        // =========================================================
+        // GPS ERROR
+        // =========================================================
+
+        function handleGpsError(error) {
+
+            let message =
+                "Unable to get GPS location.";
+
+
+            switch (error.code) {
+
+                case error.PERMISSION_DENIED:
+
+                    message =
+                        "Location permission was denied. Please allow location access.";
+
+                    break;
+
+
+                case error.POSITION_UNAVAILABLE:
+
+                    message =
+                        "GPS location is currently unavailable.";
+
+                    break;
+
+
+                case error.TIMEOUT:
+
+                    message =
+                        "GPS request timed out. Please try again.";
+
+                    break;
+
+
+                default:
+
+                    message =
+                        "Unknown GPS error occurred.";
+            }
+
+
+            showStatus(
+                "❌ " + message
+            );
+
+
+            console.error(
+                "GPS Error:",
+                error
+            );
+        }
+
+
+        // =========================================================
+        // ESCAPE HTML
+        // =========================================================
+
+        function escapeHtml(value) {
+
+            return String(value)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+
+        // =========================================================
+        // BACK BUTTON
+        // =========================================================
+
+        function goBack() {
+
+            stopTracking();
+
+            window.history.back();
+        }
+
+
+        // =========================================================
+        // STOP TRACKING WHEN PAGE CLOSES
+        // =========================================================
+
+        window.addEventListener(
+            "beforeunload",
+            function() {
+
+                if (trackingInterval !== null) {
+
+                    clearInterval(
+                        trackingInterval
+                    );
+                }
+
+            }
+        );
+
+    </script>
+
+</body>
+</html>
